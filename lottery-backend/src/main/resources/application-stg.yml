@@ -1,0 +1,18 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: lottery-backend
+#日志位置
+logging:
+  config: classpath:logback-custom.xml
+  file:
+    path: ./logs/
+
+web3:
+  web3jService: https://eth-sepolia.g.alchemy.com/v2/Your_key
+  fromAddress: "0xYourAccountAddress"
+  contractAddress: "0x000000000"
+  privateKey: "0xprvateKey"
+  binFilePath: Lottery.bin

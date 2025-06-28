@@ -1,0 +1,206 @@
+<template>
+  <div >
+    <a-row style="margin-bottom: 20px;">
+      <a-col :span="24">
+         <span style="margin-right: 2px; color:gray">
+          合约地址：
+         </span>
+         <span ref="contractAddr" style="margin-right: 5px; color:gray">
+          {{contractAddress}}
+         </span>
+         <a-tooltip placement="top" title="复制地址">
+          <span style="cursor: pointer;" @click="copyContractAddress">📋</span>
+         
+         </a-tooltip>
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col :span="8" :offset="8">
+        <div style="margin-bottom: 10px; ">
+        <a-space>
+          <a-tooltip placement="top" title="刷新页面 ">
+            <span style="cursor: pointer;font-size: large;" @click="refreshPage">🔄</span>
+            <!-- <SyncOutlined @click="refreshPage" /> -->
+          </a-tooltip>
+          <a-tooltip placement="top" title="查看我的信息">
+            <!-- <UserOutlined @click="openUserInfo" /> -->
+            <span  style="cursor: pointer;font-size: large;" @click="openUserInfo" >👤</span>
+          </a-tooltip>
+        </a-space>
+      </div>
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col :span="24">
+        <div :class="statusClass" style="margin-bottom: 20px; font-size: x-large;">
+            <LoadingBlock v-if="isLoading" class="loading" />
+            <a-button v-else-if="canBet" @click="goToBetPage">💵 马上投注</a-button>
+            <span v-else>{{ stateDesc }}</span> 
+        </div>
+      </a-col>
+    </a-row>
+    
+    <a-row>
+      <a-col :span="24">
+        <div style="margin-bottom: 20px;">
+        <LoadingBlock v-if="isLoading" class="loading"/>
+        <a-statistic v-else title="总奖金池(ETH)" :precision="4" :value="totalPot" class="statistic-info"  :value-style="{ fontSize: '30px' }"/>
+        </div>
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col :span="10" :offset="2">
+        <div style="float: right;margin-right: 15px;">
+        <LoadingBlock v-if="isLoading" class="loading"/>
+        <a-statistic v-else title="本轮投注人数" :value="playerCount" class="statistic-info" />
+        </div>
+      
+      </a-col>
+      <a-col :span="10">
+        <div style="float: left;margin-left: 15px;">
+        <LoadingBlock v-if="isLoading" class="loading" />
+        <a-statistic v-else title="本轮投注额(ETH)" :value="currentPot" class="statistic-info" />
+        </div>
+      </a-col>
+    </a-row>
+        <a-row>
+      <a-col :span="10" :offset="2">
+        <div style="float: right;margin-right: 15px;">
+        <LoadingBlock v-if="isLoading"  class="loading"/>
+        <a-statistic v-else title="累计中奖人次" :value="cumulativeWinners" class="statistic-info" />
+        </div>
+      </a-col>
+      <a-col :span="10">
+        <div style="float: left;margin-left: 15px;">
+        <LoadingBlock v-if="isLoading"  class="loading"/>
+        <a-statistic v-else title="累计派奖(ETH)" :value="cumulativePrizeAmount" :precision="4" class="statistic-info" />
+         </div>
+      </a-col>
+    </a-row>
+  </div>
+  <a-drawer v-model:open="open" class="custom-class" root-class-name="root-class-name" :root-style="{ color: 'gary' }"
+    title="我的信息" placement="right" @after-open-change="afterOpenChange">
+    <UserInfo ref="userInfoRef"/>  
+  </a-drawer>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { LotteryAPI } from '@/api/lotteryAPI'
+import { SyncOutlined, UserOutlined, CopyOutlined } from '@ant-design/icons-vue';
+import { LOTTERY_CONTRACT_ADDRESS } from '@/config/lotteryConfig';
+import { message } from 'ant-design-vue';
+import LoadingBlock from './LoadingBlock.vue';
+import UserInfo from '@/components/UserInfo.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter();
+const contractAddress = ref("");
+const currentPot = ref(0)
+const totalPot = ref(0)
+const open = ref(false);
+const stateDesc = ref('加载中...'); // 状态描述
+const isLoading = ref(true);
+const playerCount = ref(0); //投注人数
+const cumulativeWinners = ref(0);
+const cumulativePrizeAmount = ref(0);
+const userInfoRef = ref(null);
+const canBet = ref(false); // 是否可以投注
+
+const contractAddr = ref(null);
+const statusClass = ref("");
+
+const emit = defineEmits(['update:round']) // 自定义事件
+
+const goToBetPage = () => {
+  // 跳转到投注页面
+  router.push('/lottery-bet')
+}
+const copyContractAddress = async () => {
+   try{
+    const text = contractAddr.value.innerText;
+    await navigator.clipboard.writeText(text);
+    message.success("复制成功！");
+   }catch( err){
+     message.error('复制失败！');
+   }
+};
+
+const afterOpenChange = bool => {
+  console.log('open', bool);
+};
+
+const openUserInfo = async () => {
+  open.value = true;
+  if(userInfoRef.value){
+    userInfoRef.value.showUserInfo();
+  }
+};
+
+const refreshPage = async () => {
+  console.log('refreshPage')
+  // 刷新当前页面
+  await loadLotteryInfo();
+}
+const loadLotteryInfo = async () => {
+
+  isLoading.value = true; // 开始加载状态
+  try {
+    contractAddress.value = LOTTERY_CONTRACT_ADDRESS;
+    //查询当前轮次
+    const lotteryInfo = await LotteryAPI.lotteryInfo();
+    console.log('lotteryInfo', lotteryInfo);
+    emit('update:round', lotteryInfo.round) // 更新父组件的轮次信息
+    //更新状态描述
+    stateDesc.value = lotteryInfo.simpleState; // 更新状态描述
+    if(lotteryInfo.simpleState =="接受投注中"){
+      statusClass.value = "Betting";
+      canBet.value = true;
+    }else{
+      statusClass.value = "NoBetting";
+      canBet.value = false;
+    }
+
+    //查询当前状态
+    currentPot.value = await LotteryAPI.getCurrentRoundTotalAmount()  //本轮投注总额
+    totalPot.value = lotteryInfo.totalPrizePool;  //总奖金池
+    playerCount.value = (await LotteryAPI.getCurrentTicketsCount()).toString();
+    cumulativeWinners.value = Number(lotteryInfo.cumulativeWinners);
+    cumulativePrizeAmount.value = lotteryInfo.cumulativePrizeAmount;
+  }
+  catch (error) {
+    console.error('Error loading lottery info:', error);
+  } finally {
+    isLoading.value = false; // 结束加载状态
+  }
+}
+
+const intervalReload = () => {
+  loadLotteryInfo();
+  //每30秒刷新一次页面
+  setInterval(() => {
+    loadLotteryInfo();
+  }, 30000);
+}
+onMounted(intervalReload)
+</script>
+<style scoped>
+
+.status {
+  margin-bottom: 130px;
+}
+.Betting {
+  color: green
+}
+.NoBetting{
+  color: gray;
+}
+:deep(.statistic-info .ant-statistic-title) {
+  color: #d9d9d9 !important;
+}
+:deep(.statistic-info .ant-statistic-content) {
+  color: #fff
+}
+.loading {
+  color: #fff;
+}
+</style>

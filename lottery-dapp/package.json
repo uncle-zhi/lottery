@@ -1,0 +1,36 @@
+{
+  "name": "lottery",
+  "version": "1.0.0",
+  "description": "A lottery application built with Vue 3 and Vite",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:gh": "cross-env VITE_PROJECT_NAME=vue-dapp-template vite build",
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist",
+    "deploy:gh": "npm run build:gh && xcopy CNAME dist\\ && npm run deploy"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@ethersproject/abi": "^5.8.0",
+    "@ethersproject/bignumber": "^5.8.0",
+    "@ethersproject/contracts": "^5.8.0",
+    "@ethersproject/providers": "^5.8.0",
+    "ant-design-vue": "^4.2.6",
+    "ethers": "^5.8.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1",
+    "web3": "^4.16.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "cross-env": "^7.0.3",
+    "gh-pages": "^6.3.0",
+    "unplugin-vue-components": "^28.7.0",
+    "vite": "^6.3.5"
+  },
+  "author": "smart",
+  "license": "MIT"
+}
