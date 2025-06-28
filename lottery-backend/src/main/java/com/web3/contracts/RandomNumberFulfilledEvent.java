@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Type;
 
@@ -70,7 +69,7 @@ public class RandomNumberFulfilledEvent implements ApplicationRunner {
             Uint256 requestId = new Uint256(Numeric.toBigInt(log.getTopics().get(1)));
 
             // 2. 解析 data 中的非 indexed 参数
-            List<Type> decoded = FunctionReturnDecoder.decode(
+            List<?> decoded = FunctionReturnDecoder.decode(
                     log.getData(),
                     randomNumberFulfilledEvent.getNonIndexedParameters()
             );
