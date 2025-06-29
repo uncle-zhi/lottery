@@ -2,7 +2,7 @@
   <div style="margin-right: 20px; margin-top: 10px;">
     <a-space>
       <a-dropdown>
-        <a-button ghost type="text"  style=" color: white">{{ $t('message.language') }}</a-button>
+        <a-button  type="text"  style=" color: white">{{ $t('message.language') }}</a-button>
         <template #overlay>
           <a-menu>
             <a-menu-item >
@@ -18,7 +18,7 @@
       </a-space>
 
     <a-space>
-    <a-button ghost type="text" @click="connectWallet" style="margin-left: 10px; color: white">
+    <a-button  type="text" @click="connectWallet" style="margin-left: 10px; color: white">
       {{ account ? t('message.connected')+': ' + shortAccount : t('message.connectWallet') }}
     </a-button>
 

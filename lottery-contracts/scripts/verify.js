@@ -5,7 +5,7 @@ setGlobalDispatcher(proxyAgent);
 require('dotenv').config();
 
 async function main() {
-  const contractAddress = "0x375009ffd58f43d91096f64fEac6dD4fb9332f24";
+  const contractAddress = "0xE27978f515281C79c533c3FB0317aF326507b3EB";
   const constructorArgs = [
     BigInt(process.env.SUBSCRIPTION_ID),                              // subscriptionId
     process.env.VRF_COORDINATOR,           // VRF coordinator

@@ -47,6 +47,10 @@
     "betFailed": "投注失败.",
     "installWallet": "请先安装 MetaMask 等以太坊钱包插件",
     "claimSuccess": "奖金领取成功！",
-    "claimFailed": "奖金领取失败"
+    "claimFailed": "奖金领取失败",
+    "copySuccess": "复制成功！",
+    "copyFailed": "复制失败！",
+    "historyBetEntries": "历史投注次数",
+    "historyBetAmount": "历史投注金额(ETH)"
   }
 }

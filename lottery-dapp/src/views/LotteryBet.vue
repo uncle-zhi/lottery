@@ -10,100 +10,19 @@
 
     <a-form ref="formRef" :model="formState" name="dynamic_rule" v-bind="formItemLayout" @finish="checkInput"
       @finishFailed="gotBetFailed">
-      <a-form-item label="" name="betNumber" :rules="[{ required: true, message: $t('message.tip1') }]" class="numberSelect">
-    <a-radio-group v-model:value="formState.betNumber" name="radioGroup" >
-      <div>
-      <a-space>
-      <a-radio value="1">1</a-radio>
-      <a-radio value="2">2</a-radio>
-      <a-radio value="3">3</a-radio>
-      <a-radio value="4">4</a-radio>
-      <a-radio value="5">5</a-radio>
-      </a-space>
+        <a-form-item label="" name="betNumber" :rules="[{ required: true, message: $t('message.tip1') }]" class="numberSelect">
+    <a-radio-group v-model:value="formState.betNumber" name="radioGroup">
+      <div v-for="(row, rowIndex) in radioRows" :key="rowIndex">
+        <a-space>
+          <a-radio
+            v-for="num in row"
+            :key="num"
+            :value="String(num)"
+          >{{ num }}</a-radio>
+        </a-space>
       </div>
-   <div>
-      <a-space>
-      <a-radio  value="6">6</a-radio>
-      <a-radio value="7">7</a-radio>
-      <a-radio value="8">8</a-radio>
-      <a-radio value="9">9</a-radio>
-      <a-radio value="10">10</a-radio>
-      </a-space>
-    </div>
-    <div>
-      <a-space>
-          <a-radio value="11">11</a-radio>
-      <a-radio value="12">12</a-radio>
-      <a-radio value="13">13</a-radio>
-      <a-radio value="14">14</a-radio>
-      <a-radio value="15">15</a-radio>
-      </a-space>
-    </div>
-    <div>
-      <a-space>
-      <a-radio value="16">16</a-radio>
-      <a-radio value="17">17</a-radio>
-      <a-radio value="18">18</a-radio>
-      <a-radio value="19">19</a-radio>
-      <a-radio value="20">20</a-radio>
-      </a-space>
-    </div>
-    <div>
-      <a-space>
-      <a-radio value="21">21</a-radio>
-      <a-radio value="22">22</a-radio>
-      <a-radio value="23">23</a-radio>
-      <a-radio value="24">24</a-radio>
-      <a-radio value="25">25</a-radio>
-      </a-space>
-    </div>
-    <div>
-      <a-space>
-      <a-radio value="26">26</a-radio>
-      <a-radio value="27">27</a-radio>
-      <a-radio value="28">28</a-radio>
-      <a-radio value="29">29</a-radio>
-      <a-radio value="30">30</a-radio>
-      </a-space>
-    </div>
-    <div>
-      <a-space>
-      <a-radio value="31">31</a-radio>
-      <a-radio value="32">32</a-radio>
-      <a-radio value="33">33</a-radio>
-      <a-radio value="34">34</a-radio>
-      <a-radio value="35">35</a-radio>
-      </a-space>
-    </div>
-    <div>
-      <a-space>
-      <a-radio value="36">36</a-radio>
-      <a-radio value="37">37</a-radio>
-      <a-radio value="38">38</a-radio>
-      <a-radio value="39">39</a-radio>
-      <a-radio value="40">40</a-radio>
-      </a-space>
-    </div>
-    <div>
-      <a-space>
-      <a-radio value="41">41</a-radio>
-      <a-radio value="42">42</a-radio>
-      <a-radio value="43">43</a-radio>
-      <a-radio value="44">44</a-radio>
-      <a-radio value="45">45</a-radio>
-      </a-space>
-    </div>
-    <div>
-      <a-space>
-      <a-radio value="46">46</a-radio>
-      <a-radio value="47">47</a-radio>
-      <a-radio value="48">48</a-radio>
-      <a-radio value="49">49</a-radio>
-      <a-radio value="50">50</a-radio>
-      </a-space>
-    </div>
     </a-radio-group>
-    </a-form-item>
+  </a-form-item>
       <a-form-item  label="" name="betAmount" :rules="[{ required: true, message: $t('message.tip2') }]">
         <span style="margin-top: 5px;">{{$t('message.betAmount')}}</span>
         <a-input-number  v-model:value="formState.betAmount" :min="0.01" step="0.01"  style="margin-left: 15px;"/>
@@ -122,12 +41,27 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import {  SUPPORTED_NETWORK } from '@/config/lotteryConfig'
 import {LotteryAPI} from '@/api/lotteryAPI'
 import { message } from 'ant-design-vue';
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 const { t } = useI18n()
+const router = useRouter()
+// 生成 1~50 的数组，每行 5 个分组
+const radioRows = computed(() => {
+  const numbers = Array.from({ length: 5 }, (_, i) => i + 1)
+  const chunkSize = 5
+  const rows = []
+  for (let i = 0; i < numbers.length; i += chunkSize) {
+    rows.push(numbers.slice(i, i + chunkSize))
+  }
+  return rows
+})
+const goHome = () => {
+  router.push('/')
+}
 const routes = [
   {
     path: '/',
@@ -161,7 +95,8 @@ const goBet = async (e) => {
     const receipt = await LotteryAPI.buyTicket(formState.betNumber, formState.betAmount)
     if (receipt.status) {
       message.success(t('message.betSuccess'));
-      resetForm(); // 重置表单
+      goHome()
+      // resetForm(); // 重置表单
     } else {
       message.error(t('message.betFailed'));    }
   } catch (err) {

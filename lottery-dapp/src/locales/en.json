@@ -45,9 +45,13 @@
     "tip3": "Please make sure your wallet is connected and the current network is {network} before placing a bet.",
     "status1": "Betting closed, waiting for results",
     "betSuccess": "Bet Placed Successfully!",
-    "betFailed": "Bet Failed.",
+    "betFailed": "Bet Failed ",
     "installWallet": "Please install MetaMask or another Ethereum wallet extension first",
     "claimSuccess": "Reward claimed successfully!",
-    "claimFailed": "Reward claim failed"
+    "claimFailed": "Reward claim failed",
+    "copySuccess": "Copy Successfully！",
+    "copyFailed": "Copy Failed！",
+    "historyBetEntries": "History Bet Entries",
+    "historyBetAmount": "History Bet Amount(ETH)"
   }
 }

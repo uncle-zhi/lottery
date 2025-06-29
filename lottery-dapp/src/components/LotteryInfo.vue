@@ -77,9 +77,23 @@
          </div>
       </a-col>
     </a-row>
+      <a-row>
+      <a-col :span="10" :offset="2">
+        <div style="float: right;margin-right: 15px;">
+        <LoadingBlock v-if="isLoading"  class="loading"/>
+        <a-statistic v-else :title="$t('message.historyBetEntries')" :value="cumulativePlayers" class="statistic-info" />
+        </div>
+      </a-col>
+      <a-col :span="10">
+        <div style="float: left;margin-left: 15px;">
+        <LoadingBlock v-if="isLoading"  class="loading"/>
+        <a-statistic v-else :title="$t('message.totalRewardsDistributed')" :value="cumulativeBetAmount" :precision="4" class="statistic-info" />
+         </div>
+      </a-col>
+    </a-row>
   </div>
   <a-drawer v-model:open="open" class="custom-class" root-class-name="root-class-name" :root-style="{ color: 'gary' }"
-    title="我的信息" placement="right" @after-open-change="afterOpenChange">
+    :title="$t('message.myInfo') " placement="right" @after-open-change="afterOpenChange">
     <UserInfo ref="userInfoRef"/>  
   </a-drawer>
 </template>
@@ -93,6 +107,8 @@ import { message } from 'ant-design-vue';
 import LoadingBlock from './LoadingBlock.vue';
 import UserInfo from '@/components/UserInfo.vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const router = useRouter();
 const contractAddress = ref("");
 const currentPot = ref(0)
@@ -110,6 +126,9 @@ const contractAddr = ref(null);
 const statusClass = ref("");
 const lotteryStatus = ref(0);
 const winningNumber = ref(0);
+const cumulativePlayers = ref(0);
+const cumulativeBetAmount = ref(0);
+
 
 const emit = defineEmits(['update:round']) // 自定义事件
 
@@ -121,9 +140,10 @@ const copyContractAddress = async () => {
    try{
     const text = contractAddr.value.innerText;
     await navigator.clipboard.writeText(text);
-    message.success("复制成功！");
+    message.success(t('message.copySuccess'));
+
    }catch( err){
-     message.error('复制失败！');
+     message.error(t('message.copyFailed'));
    }
 };
 
@@ -170,6 +190,8 @@ const loadLotteryInfo = async () => {
     playerCount.value = (await LotteryAPI.getCurrentTicketsCount()).toString();
     cumulativeWinners.value = Number(lotteryInfo.cumulativeWinners);
     cumulativePrizeAmount.value = lotteryInfo.cumulativePrizeAmount;
+    cumulativePlayers.value = lotteryInfo.cumulativePlayers;
+    cumulativeBetAmount.value = lotteryInfo.cumulativeBetAmount ;
   }
   catch (error) {
     console.error('Error loading lottery info:', error);

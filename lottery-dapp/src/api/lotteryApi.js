@@ -276,19 +276,14 @@ export const LotteryAPI = {
       cumulativePrizeAmount: web3.utils.fromWei(lotteryInfo.cumulativePrizeAmount, 'ether'),  //累计中奖金额
       cumulativeWinners: lotteryInfo.cumulativeWinners, //累计中奖人次
       distributedCount: lotteryInfo.distributedCount,
+      cumulativePlayers: lotteryInfo.cumulativePlayers, //累计投注人次 (Cumulative players)
+      cumulativeBetAmount: web3.utils.fromWei(lotteryInfo.cumulativeBetAmount,'ether'), //累计投注金额 (Cumulative bet amount)
       blockNumber: blockNumber,
       delayDuration: delay_duration,
       status: 0,
       stateDesc: '未知状态',
       simpleState: '未知状态'
     }
-        //     AcceptingBets,   // 接受投注中0
-        // DelayRevealing,  // 延时开奖中1
-        // WaitPreReveal,   //等待预开奖2
-        // PreRevealing,    // 预开奖中3
-        // WaitReveal,      //预开奖完成，等待开奖（随机数已生成）4
-        // Revealed,         // 开奖完成5
-        // unknown          //未知状态;6
     const status = await contract.methods.getLotteryStatus().call();
     info.status = Number(status);
 
