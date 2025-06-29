@@ -1,0 +1,52 @@
+{
+    "breadcrumb": {
+    "home": "首页",
+    "bet": "投注页面"
+  },
+  "lotteryStatus": {
+    "0": "接受投注中",
+    "1": "投注结束，待开奖",
+    "2": "投注结束，待开奖",
+    "3": "投注结束，待开奖",
+    "4": "投注结束，待开奖",
+    "5": "开奖结束，中奖号码为 : {number}"
+  },
+  "message": {
+    "hello": "你好，世界",
+    "language": "中文",
+    "homeTitle": "数字竞猜",
+    "round": "轮次: {round}",
+    "contractAddress": "合约地址",
+    "copyAddress": "复制地址",
+    "refresh": "刷新",
+    "myInfo": "我的信息",
+    "connectWallet": "连接钱包",
+    "connected": "已连接",
+    "totalPrizePool": "总奖池 (ETH)",
+    "bettorsThisRound": "本轮参与人数",
+    "currentRoundBetAmount": "本轮总投注金额 (ETH)",
+    "totalWinningEntries": "总中奖人次",
+    "totalRewardsDistributed": "总奖励发放 (ETH)",
+    "myCurrentRoundBetNumber": "本轮投注号码",
+    "myCurrentRoundBetAmount": "本轮投注金额 (ETH)",
+    "pendingRewards": "待领取奖励(ETH)",
+    "totalBets": "总投注次数",
+    "totalBetAmount": "总投注金额(ETH)",
+    "totalWins": "总中奖次数",
+    "totalPrizeAmount": "总中奖金额(ETH)",
+    "withdrawReward": "提取奖励",
+    "bet": "投注",
+    "betNumber": "投注号码",
+    "betAmount": "投注金额(ETH)",
+    "tip1" :"请选择您的投注号码",
+    "tip2" :"请输入您的投注金额！最小投注金额为0.01 ETH",
+    "reset": "重置",
+    "tip3": "请在投注前确保已连接钱包，并且当前网络为 {network}",
+    "status1": "投注已关闭，等待结果",
+    "betSuccess": "投注成功！",
+    "betFailed": "投注失败.",
+    "installWallet": "请先安装 MetaMask 等以太坊钱包插件",
+    "claimSuccess": "奖金领取成功！",
+    "claimFailed": "奖金领取失败"
+  }
+}

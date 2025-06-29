@@ -278,6 +278,7 @@ export const LotteryAPI = {
       distributedCount: lotteryInfo.distributedCount,
       blockNumber: blockNumber,
       delayDuration: delay_duration,
+      status: 0,
       stateDesc: '未知状态',
       simpleState: '未知状态'
     }
@@ -289,6 +290,8 @@ export const LotteryAPI = {
         // Revealed,         // 开奖完成5
         // unknown          //未知状态;6
     const status = await contract.methods.getLotteryStatus().call();
+    info.status = Number(status);
+
     if(status==0){
       info.stateDesc = '接受投注中'
       info.simpleState = '接受投注中'

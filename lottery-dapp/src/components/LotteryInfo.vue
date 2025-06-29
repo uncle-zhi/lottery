@@ -3,12 +3,12 @@
     <a-row style="margin-bottom: 20px;">
       <a-col :span="24">
          <span style="margin-right: 2px; color:gray">
-          合约地址：
+          {{$t('message.contractAddress')}}：
          </span>
          <span ref="contractAddr" style="margin-right: 5px; color:gray">
           {{contractAddress}}
          </span>
-         <a-tooltip placement="top" title="复制地址">
+         <a-tooltip placement="top" :title="$t('message.copyAddress')">
           <span style="cursor: pointer;" @click="copyContractAddress">📋</span>
          
          </a-tooltip>
@@ -18,11 +18,11 @@
       <a-col :span="8" :offset="8">
         <div style="margin-bottom: 10px; ">
         <a-space>
-          <a-tooltip placement="top" title="刷新页面 ">
+          <a-tooltip placement="top" :title="$t('message.refresh') ">
             <span style="cursor: pointer;font-size: large;" @click="refreshPage">🔄</span>
             <!-- <SyncOutlined @click="refreshPage" /> -->
           </a-tooltip>
-          <a-tooltip placement="top" title="查看我的信息">
+          <a-tooltip placement="top" :title="$t('message.myInfo') ">
             <!-- <UserOutlined @click="openUserInfo" /> -->
             <span  style="cursor: pointer;font-size: large;" @click="openUserInfo" >👤</span>
           </a-tooltip>
@@ -34,8 +34,8 @@
       <a-col :span="24">
         <div :class="statusClass" style="margin-bottom: 20px; font-size: x-large;">
             <LoadingBlock v-if="isLoading" class="loading" />
-            <a-button v-else-if="canBet" @click="goToBetPage">💵 马上投注</a-button>
-            <span v-else>{{ stateDesc }}</span> 
+            <a-button type="text" style="color: white;"  v-else-if="canBet" @click="goToBetPage">💵 {{ $t('message.bet') }}</a-button>
+            <span v-else>{{ $t('lotteryStatus.'+ lotteryStatus,{ number: winningNumber }) }}</span> 
         </div>
       </a-col>
     </a-row>
@@ -44,7 +44,7 @@
       <a-col :span="24">
         <div style="margin-bottom: 20px;">
         <LoadingBlock v-if="isLoading" class="loading"/>
-        <a-statistic v-else title="总奖金池(ETH)" :precision="4" :value="totalPot" class="statistic-info"  :value-style="{ fontSize: '30px' }"/>
+        <a-statistic v-else :title="$t('message.totalPrizePool')" :precision="4" :value="totalPot" class="statistic-info"  :value-style="{ fontSize: '30px' }"/>
         </div>
       </a-col>
     </a-row>
@@ -52,14 +52,14 @@
       <a-col :span="10" :offset="2">
         <div style="float: right;margin-right: 15px;">
         <LoadingBlock v-if="isLoading" class="loading"/>
-        <a-statistic v-else title="本轮投注人数" :value="playerCount" class="statistic-info" />
+        <a-statistic v-else :title="$t('message.bettorsThisRound')" :value="playerCount" class="statistic-info" />
         </div>
       
       </a-col>
       <a-col :span="10">
         <div style="float: left;margin-left: 15px;">
         <LoadingBlock v-if="isLoading" class="loading" />
-        <a-statistic v-else title="本轮投注额(ETH)" :value="currentPot" class="statistic-info" />
+        <a-statistic v-else :title="$t('message.currentRoundBetAmount')" :value="currentPot" class="statistic-info" />
         </div>
       </a-col>
     </a-row>
@@ -67,13 +67,13 @@
       <a-col :span="10" :offset="2">
         <div style="float: right;margin-right: 15px;">
         <LoadingBlock v-if="isLoading"  class="loading"/>
-        <a-statistic v-else title="累计中奖人次" :value="cumulativeWinners" class="statistic-info" />
+        <a-statistic v-else :title="$t('message.totalWinningEntries')" :value="cumulativeWinners" class="statistic-info" />
         </div>
       </a-col>
       <a-col :span="10">
         <div style="float: left;margin-left: 15px;">
         <LoadingBlock v-if="isLoading"  class="loading"/>
-        <a-statistic v-else title="累计派奖(ETH)" :value="cumulativePrizeAmount" :precision="4" class="statistic-info" />
+        <a-statistic v-else :title="$t('message.totalRewardsDistributed')" :value="cumulativePrizeAmount" :precision="4" class="statistic-info" />
          </div>
       </a-col>
     </a-row>
@@ -108,6 +108,8 @@ const canBet = ref(false); // 是否可以投注
 
 const contractAddr = ref(null);
 const statusClass = ref("");
+const lotteryStatus = ref(0);
+const winningNumber = ref(0);
 
 const emit = defineEmits(['update:round']) // 自定义事件
 
@@ -152,7 +154,7 @@ const loadLotteryInfo = async () => {
     emit('update:round', lotteryInfo.round) // 更新父组件的轮次信息
     //更新状态描述
     stateDesc.value = lotteryInfo.simpleState; // 更新状态描述
-    if(lotteryInfo.simpleState =="接受投注中"){
+    if(lotteryInfo.status ==0){
       statusClass.value = "Betting";
       canBet.value = true;
     }else{
@@ -160,6 +162,8 @@ const loadLotteryInfo = async () => {
       canBet.value = false;
     }
 
+    lotteryStatus.value = lotteryInfo.status;
+    winningNumber.value = lotteryInfo.latestRandomNumber;
     //查询当前状态
     currentPot.value = await LotteryAPI.getCurrentRoundTotalAmount()  //本轮投注总额
     totalPot.value = lotteryInfo.totalPrizePool;  //总奖金池

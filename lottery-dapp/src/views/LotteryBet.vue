@@ -6,11 +6,11 @@
     sub-title=""
   />
   <div class="bet-page">
-    <h2>投注页面</h2>
+    <h2>{{ $t('message.betNumber') }}</h2>
 
     <a-form ref="formRef" :model="formState" name="dynamic_rule" v-bind="formItemLayout" @finish="checkInput"
       @finishFailed="gotBetFailed">
-      <a-form-item label="" name="betNumber" :rules="[{ required: true, message: '请选择你的投注号码' }]" class="numberSelect">
+      <a-form-item label="" name="betNumber" :rules="[{ required: true, message: $t('message.tip1') }]" class="numberSelect">
     <a-radio-group v-model:value="formState.betNumber" name="radioGroup" >
       <div>
       <a-space>
@@ -19,7 +19,6 @@
       <a-radio value="3">3</a-radio>
       <a-radio value="4">4</a-radio>
       <a-radio value="5">5</a-radio>
-
       </a-space>
       </div>
    <div>
@@ -105,28 +104,20 @@
     </div>
     </a-radio-group>
     </a-form-item>
-      <a-form-item  label="" name="betAmount" :rules="[{ required: true, message: '请转入你的投注金额!最低为 0.01 ETH' }]">
-        <span style="margin-top: 5px;">投注(ETH):</span>
+      <a-form-item  label="" name="betAmount" :rules="[{ required: true, message: $t('message.tip2') }]">
+        <span style="margin-top: 5px;">{{$t('message.betAmount')}}</span>
         <a-input-number  v-model:value="formState.betAmount" :min="0.01" step="0.01"  style="margin-left: 15px;"/>
       </a-form-item>
-
-      <a-popconfirm v-model:open="popOpen" :title="confirmTip" cancelText="取消" okText="确认" @confirm="goBet"
-        @cancel="cancel">
-        <!-- dummy 触发元素，用作承载 -->
-        <template #default>
-          <span></span>
-        </template>
-      </a-popconfirm>
       <a-form-item v-bind="tailLayout">
         <div>
         <a-space>
-        <a-button html-type="submit" size="middle">投注</a-button>
-        <a-button @Click="resetForm" size="middle">重置</a-button>
+        <a-button html-type="submit" size="middle" :loading="betLoading">{{$t('message.bet')}}</a-button>
+        <a-button @Click="resetForm" size="middle">{{$t('message.reset')}}</a-button>
         </a-space>
         </div>
       </a-form-item>
     </a-form>
-    <div style="color: red;">{{ tip}}</div>
+    <div style="color: red;">{{ $t('message.tip3',{network:SUPPORTED_NETWORK.chainName})}}</div>
   </div>
 </template>
 
@@ -135,22 +126,21 @@ import { reactive, ref } from 'vue'
 import {  SUPPORTED_NETWORK } from '@/config/lotteryConfig'
 import {LotteryAPI} from '@/api/lotteryAPI'
 import { message } from 'ant-design-vue';
-
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const routes = [
   {
     path: '/',
-    breadcrumbName: '首页',
+    breadcrumbName: t('breadcrumb.home'),
   },
   {
     path: '/lottery-bet',
-    breadcrumbName: '投注页面',
+    breadcrumbName: t('breadcrumb.bet'),
   }
 
 ];
 
-const confirmTip = ref('请确认投注信息');
-const popOpen = ref(false)
-const tip = ref(`	❗请在投注前确保已连接钱包，并且当前网络为 ${SUPPORTED_NETWORK.chainName}`);
+const betLoading = ref(false)
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 20 },
@@ -161,39 +151,25 @@ const tailLayout = {
 const resetForm = () => {
   formState.betNumber = ''
   formState.betAmount = ''
-  popOpen.value = false
-  confirmTip.value = '请确认投注信息'
-  tip.value = `❗请在投注前确保已连接钱包，并且当前网络为 ${SUPPORTED_NETWORK.chainName}`;
 }
 
 const goBet = async (e) => {
   console.log(e);
-  loading.value = true
+  betLoading.value = true
   message.value = ''
   try {
     const receipt = await LotteryAPI.buyTicket(formState.betNumber, formState.betAmount)
     if (receipt.status) {
-      console.log('投注成功', receipt);
-      message.success('投注成功！');
+      message.success(t('message.betSuccess'));
       resetForm(); // 重置表单
     } else {
-      console.error('投注失败', receipt);
-      message.error('投注失败，请稍后再试。');    }
+      message.error(t('message.betFailed'));    }
   } catch (err) {
-    console.log('交易失败', err);
-     message.error(LotteryAPI.getRequireError(err), 5);
+     message.error(t('message.betFailed')+':'+LotteryAPI.getRequireError(err), 5);
   } finally {
-    loading.value = false
+    betLoading.value = false
   }
 };
-
-
-
-const cancel = e => {
-  console.log(e);
-  message.error('取消投注');
-};
-
 const amount = ref('')
 const loading = ref(false)
 const formState = reactive({
@@ -204,11 +180,14 @@ const formState = reactive({
 //利用form 来验证输入
 const checkInput = e => {
   if (!window.ethereum) {
-    message.error('请先安装 MetaMask 等以太坊钱包插件')
+    message.error(t('message.installWallet'));
     return
   }
-  confirmTip.value = `请确认投注信息，投注号码: ${formState.betNumber}, 投注金额: ${formState.betAmount} ETH`;
-  popOpen.value = true; // 显示确认弹窗
+   goBet()
+}
+
+const onValuesChange = (changedValues, allValues) => {
+ 
 }
 
 const gotBetFailed = errorInfo => {

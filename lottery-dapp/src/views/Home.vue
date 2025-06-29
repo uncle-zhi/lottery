@@ -3,7 +3,7 @@
     <div class = "connect-wallet">
        <WalletConnect ref="wallet" />
       </div>
-    <h1 class="text-2xl font-bold mb-4 white">🎰 数字竞猜(轮次：{{ round }})</h1>
+    <h1 class="text-2xl font-bold mb-4 white">🎰 {{$t('message.homeTitle')}}({{$t('message.round',{round: round})}})</h1>
     <LotteryInfo @update:round="updateRound" />
   </div>
 </template>
@@ -12,13 +12,11 @@
 import WalletConnect from '@/components/WalletConnect.vue'
 import LotteryInfo from '@/components/LotteryInfo.vue'
 import { ref, onMounted } from 'vue'
-
 const round = ref(0);
 const wallet = ref();
 const updateRound = (newRound) => {
   round.value = newRound;
 }
-
 </script>
 <style scoped>
 .connect-wallet {

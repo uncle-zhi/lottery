@@ -1,0 +1,53 @@
+
+{
+     "breadcrumb": {
+    "home": "Home",
+    "bet": "Betting Page"
+  },
+  "lotteryStatus": {
+    "0": "Betting Open",
+    "1": "Bet Closed, Waiting For Result",
+    "2": "Bet Closed, Waiting For Result",
+    "3": "Bet Closed, Waiting For Result",
+    "4": "Bet Closed, Waiting For Result",
+    "5": "Winning Number : {number}"
+  },
+  "message": {
+    "hello": "Hello World",
+    "language": "English",
+    "homeTitle": "Guess Number",
+    "round": "Round: {round}",
+    "contractAddress": "Contract Address",
+    "copyAddress": "Copy Address",
+    "refresh": "Refresh",
+    "myInfo": "My Info",
+    "connectWallet": "Connect Wallet",
+    "connected": "Connected",
+    "totalPrizePool": "Total Prize Pool (ETH)",
+    "bettorsThisRound": "Players In This Round",
+    "currentRoundBetAmount": "Total Bet Amount In This Round (ETH)",
+    "totalWinningEntries": "Total Winning Entries",
+    "totalRewardsDistributed": "Total Rewards Distributed (ETH)",
+    "myCurrentRoundBetNumber": "Current Round Bet Number",
+    "myCurrentRoundBetAmount": "Current Round Bet Amount (ETH)",
+    "pendingRewards": "Pending Rewards(ETH)",
+    "totalBets": "Total Bets",
+    "totalBetAmount": "Total Bet Amount(ETH)",
+    "totalWins": "Total Wins",
+    "totalPrizeAmount": "Total Prize Amount(ETH)",
+    "withdrawReward": "Withdraw Reward",
+    "bet": "Bet",
+    "betNumber": "Bet Number",
+    "betAmount": "Bet Amount(ETH)",
+    "tip1" :"Please select your bet number",
+    "tip2" :"Please enter your bet amount! Minimum is 0.01 ETH",
+    "reset": "Reset",
+    "tip3": "Please make sure your wallet is connected and the current network is {network} before placing a bet.",
+    "status1": "Betting closed, waiting for results",
+    "betSuccess": "Bet Placed Successfully!",
+    "betFailed": "Bet Failed.",
+    "installWallet": "Please install MetaMask or another Ethereum wallet extension first",
+    "claimSuccess": "Reward claimed successfully!",
+    "claimFailed": "Reward claim failed"
+  }
+}
