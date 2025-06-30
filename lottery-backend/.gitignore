@@ -36,3 +36,4 @@ application-dev.yml
 
 ### Mac OS ###
 .DS_Store
+.idea

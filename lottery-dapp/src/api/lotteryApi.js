@@ -72,7 +72,37 @@ export const LotteryAPI = {
   weiToEther: (amount) => {
      return Number(web3.utils.fromWei(amount , 'ether'))
   },
-
+  getWinRecords: async(player) => {
+      const events = await contract.getPastEvents("PrizeDistributed", {
+        fromBlock: 0,
+        toBlock: 'latest',
+        filter: {
+          player: player
+        }
+      })
+      return events;
+  },
+  getRandomNumberFulfilledEvent: async(round,count) => {
+      //只取最近10轮的
+      let filterRound = [];
+      if(round>count){
+        for(let i=round-1;i>=round-count;i--){
+          filterRound.push(i);
+        }
+      }else{
+        for(let i=round-1;i>0;i--){
+          filterRound.push(i);
+        }
+      }
+    const events = await contract.getPastEvents("RandomNumberFulfilled", {
+        fromBlock: 0,
+        toBlock: 'latest',
+        filter: {
+          round: filterRound
+        }
+      })
+    return events;
+  },
   getTicketPurchasedEvent: async() => {
     const accounts = await web3.eth.getAccounts();
     const events = await contract.getPastEvents("TicketPurchased", {
@@ -109,9 +139,9 @@ export const LotteryAPI = {
     }
     await contract.methods.withdrawAll().send({from: accounts[0]});
   },
-  setLatestRandomNumber: async(num) =>{
+  simulatePreDis: async(num) =>{
     const accounts = await web3.eth.getAccounts();
-    await contract.methods.setLatestRandomNumber(num).send({from: accounts[0]});
+    await contract.methods.simulatePreDis(num).send({from: accounts[0]});
   },
   getRequireError: (error) => {
     const msg = error.message;

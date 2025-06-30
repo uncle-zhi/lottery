@@ -2,7 +2,8 @@
 {
      "breadcrumb": {
     "home": "Home",
-    "bet": "Betting Page"
+    "bet": "Betting Page",
+    "about": "About Page"
   },
   "lotteryStatus": {
     "0": "Betting Open",
@@ -17,25 +18,25 @@
     "language": "English",
     "homeTitle": "Guess Number",
     "round": "Round: {round}",
-    "contractAddress": "Contract Address",
+    "contractAddress": "Contract Addr",
     "copyAddress": "Copy Address",
     "refresh": "Refresh",
     "myInfo": "My Info",
     "connectWallet": "Connect Wallet",
     "connected": "Connected",
     "totalPrizePool": "Total Prize Pool (ETH)",
-    "bettorsThisRound": "Players In This Round",
-    "currentRoundBetAmount": "Total Bet Amount In This Round (ETH)",
+    "bettorsThisRound": "Players This Round",
+    "currentRoundBetAmount": "Round Bet Total (ETH)",
     "totalWinningEntries": "Total Winning Entries",
-    "totalRewardsDistributed": "Total Rewards Distributed (ETH)",
-    "myCurrentRoundBetNumber": "Current Round Bet Number",
-    "myCurrentRoundBetAmount": "Current Round Bet Amount (ETH)",
+    "totalRewardsDistributed": "Total ETH Awarded",
+    "myCurrentRoundBetNumber": "Your Bet Number",
+    "myCurrentRoundBetAmount": "Current Bets (ETH)",
     "pendingRewards": "Pending Rewards(ETH)",
     "totalBets": "Total Bets",
     "totalBetAmount": "Total Bet Amount(ETH)",
     "totalWins": "Total Wins",
     "totalPrizeAmount": "Total Prize Amount(ETH)",
-    "withdrawReward": "Withdraw Reward",
+    "withdrawReward": "Claim Reward",
     "bet": "Bet",
     "betNumber": "Bet Number",
     "betAmount": "Bet Amount(ETH)",
@@ -51,7 +52,16 @@
     "claimFailed": "Reward claim failed",
     "copySuccess": "Copy Successfully！",
     "copyFailed": "Copy Failed！",
-    "historyBetEntries": "History Bet Entries",
-    "historyBetAmount": "History Bet Amount(ETH)"
+    "historyBetEntries": "History Bet Entries  ",
+    "historyBetAmount": "Past Bets (ETH)",
+    "showRoundsInfo": "Show Past Rounds Info",
+    "roundName": "Round ",
+    "winNumber": "Winning Number",
+    "winRecord": "Winning Record",
+    "cancel": "Cancel",
+    "about": "About",
+    "loading": "Loading",
+    "betRemainTip": "Bet ends in { blockCountdown  } blocks",
+    "reward": "Reward(ETH)"
   }
 }

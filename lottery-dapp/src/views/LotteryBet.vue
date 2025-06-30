@@ -32,6 +32,7 @@
         <a-space>
         <a-button html-type="submit" size="middle" :loading="betLoading">{{$t('message.bet')}}</a-button>
         <a-button @Click="resetForm" size="middle">{{$t('message.reset')}}</a-button>
+        <a-button @Click="goHome" size="middle">{{$t('message.cancel')}}</a-button>
         </a-space>
         </div>
       </a-form-item>

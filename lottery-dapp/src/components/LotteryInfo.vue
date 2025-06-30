@@ -13,6 +13,14 @@
          
          </a-tooltip>
       </a-col>
+    </a-row >
+      <a-row v-if="blockCountdown>=0" style="margin-bottom: 20px;">
+      <a-col :span="24">
+         <span  style="margin-right: 2px; color:tomato">
+           {{ $t('message.betRemainTip',{blockCountdown: blockCountdown }) }}
+         </span>
+      
+      </a-col>
     </a-row>
     <a-row>
       <a-col :span="8" :offset="8">
@@ -20,6 +28,10 @@
         <a-space>
           <a-tooltip placement="top" :title="$t('message.refresh') ">
             <span style="cursor: pointer;font-size: large;" @click="refreshPage">🔄</span>
+            <!-- <SyncOutlined @click="refreshPage" /> -->
+          </a-tooltip>
+          <a-tooltip placement="top" :title="$t('message.showRoundsInfo') ">
+            <span style="cursor: pointer;font-size: large;" @click="showRoundsInfo">🧿</span>
             <!-- <SyncOutlined @click="refreshPage" /> -->
           </a-tooltip>
           <a-tooltip placement="top" :title="$t('message.myInfo') ">
@@ -87,7 +99,7 @@
       <a-col :span="10">
         <div style="float: left;margin-left: 15px;">
         <LoadingBlock v-if="isLoading"  class="loading"/>
-        <a-statistic v-else :title="$t('message.totalRewardsDistributed')" :value="cumulativeBetAmount" :precision="4" class="statistic-info" />
+        <a-statistic v-else :title="$t('message.historyBetAmount')" :value="cumulativeBetAmount" :precision="4" class="statistic-info" />
          </div>
       </a-col>
     </a-row>
@@ -96,10 +108,14 @@
     :title="$t('message.myInfo') " placement="right" @after-open-change="afterOpenChange">
     <UserInfo ref="userInfoRef"/>  
   </a-drawer>
+    <a-drawer v-model:open="openRoundRecord" class="custom-class" root-class-name="root-class-name" :root-style="{ color: 'gary' }"
+    :title="$t('message.winRecord') " placement="right">
+      <a-table :dataSource="roundRecords" :columns="roundRecordsColumns" />
+  </a-drawer>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,onUnmounted } from 'vue'
 import { LotteryAPI } from '@/api/lotteryAPI'
 import { SyncOutlined, UserOutlined, CopyOutlined } from '@ant-design/icons-vue';
 import { LOTTERY_CONTRACT_ADDRESS } from '@/config/lotteryConfig';
@@ -128,9 +144,40 @@ const lotteryStatus = ref(0);
 const winningNumber = ref(0);
 const cumulativePlayers = ref(0);
 const cumulativeBetAmount = ref(0);
-
-
+const blockCountdown = ref('--');
+const openRoundRecord = ref(false);
+const roundRecords = ref([]);
+const roundRecordsColumns = ref([])
+const round = ref(0);
+const intervalId = ref(null)
 const emit = defineEmits(['update:round']) // 自定义事件
+
+const showRoundsInfo = async() => {
+  // 跳转到轮次信息页面
+   openRoundRecord.value = true;
+   roundRecordsColumns.value = [
+     { title: t('message.roundName'), dataIndex: 'round', key: 'round' },
+     { title: t('message.winNumber'), dataIndex: 'number', key: 'number'}
+   ]
+    if(round.value <= 1){
+       return;
+    }
+ roundRecords.value = [];
+    const events = await LotteryAPI.getRandomNumberFulfilledEvent(Number(round.value),10);
+    if(events.length > 0){
+       for(let i=0;i<events.length;i++){
+           let returnValues = events[i].returnValues;
+           roundRecords.value.push({
+               round: returnValues.round,
+               number: returnValues.randomNumber
+
+           })
+       }
+       roundRecords.value = roundRecords.value.reverse();
+    }
+
+    console.info('event',events);
+}
 
 const goToBetPage = () => {
   // 跳转到投注页面
@@ -181,7 +228,7 @@ const loadLotteryInfo = async () => {
       statusClass.value = "NoBetting";
       canBet.value = false;
     }
-
+    round.value = lotteryInfo.round;
     lotteryStatus.value = lotteryInfo.status;
     winningNumber.value = lotteryInfo.latestRandomNumber;
     //查询当前状态
@@ -190,8 +237,15 @@ const loadLotteryInfo = async () => {
     playerCount.value = (await LotteryAPI.getCurrentTicketsCount()).toString();
     cumulativeWinners.value = Number(lotteryInfo.cumulativeWinners);
     cumulativePrizeAmount.value = lotteryInfo.cumulativePrizeAmount;
-    cumulativePlayers.value = lotteryInfo.cumulativePlayers;
+    cumulativePlayers.value = Number(lotteryInfo.cumulativePlayers);
     cumulativeBetAmount.value = lotteryInfo.cumulativeBetAmount ;
+    if((lotteryInfo.endNumber - lotteryInfo.blockNumber )< 1000 ){
+       blockCountdown.value = lotteryInfo.endNumber - lotteryInfo.blockNumber ;
+    }else{
+       blockCountdown.value = "--";
+
+    }
+    
   }
   catch (error) {
     console.error('Error loading lottery info:', error);
@@ -203,11 +257,19 @@ const loadLotteryInfo = async () => {
 const intervalReload = () => {
   loadLotteryInfo();
   //每30秒刷新一次页面
-  setInterval(() => {
+  if (!intervalId.value) {
+  intervalId.value =setInterval(() => {
     loadLotteryInfo();
   }, 30000);
 }
+}
 onMounted(intervalReload)
+onUnmounted(() => {
+  if (intervalId.value) {
+    clearInterval(intervalId.value)
+    intervalId.value = null
+  }
+})
 </script>
 <style scoped>
 

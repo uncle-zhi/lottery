@@ -1,6 +1,7 @@
-package com.web3.contracts;
+package com.web3.events;
 
 import com.web3.config.Web3jProperties;
+import com.web3.contracts.Lottery;
 import com.web3.service.ContractService;
 import io.reactivex.Flowable;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Event;
 
 import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.abi.datatypes.generated.Uint32;
 import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -45,9 +47,8 @@ public class RandomNumberFulfilledEvent implements ApplicationRunner {
     public void openListen(BigInteger startBlockNumber){
         Event randomNumberFulfilledEvent = new Event("RandomNumberFulfilled",
                 Arrays.asList(
-                        new TypeReference<Uint256>(true) {}, // requestId (indexed)
-                        new TypeReference<Uint8>() {},       // randomNumber
-                        new TypeReference<Uint256>() {}      // originalRandomNumber
+                        new TypeReference<Uint32>(true) {}, // round(indexed)
+                        new TypeReference<Uint8>() {}       // randomNumber
                 )
         );
 
@@ -65,7 +66,7 @@ public class RandomNumberFulfilledEvent implements ApplicationRunner {
        // 监听事件
         logFlowable.subscribe(log -> {
             // 1. 解析 indexed 参数 requestId
-            Uint256 requestId = new Uint256(Numeric.toBigInt(log.getTopics().get(1)));
+            Uint32 round = new Uint32(Numeric.toBigInt(log.getTopics().get(1)));
 
             // 2. 解析 data 中的非 indexed 参数
             List<?> decoded = FunctionReturnDecoder.decode(
@@ -74,12 +75,9 @@ public class RandomNumberFulfilledEvent implements ApplicationRunner {
             );
 
             Uint8 randomNumber = (Uint8) decoded.get(0);
-            Uint256 originalRandomNumber = (Uint256) decoded.get(1);
 
-            LOGGER.info("requestId: {}", requestId.getValue());
+            LOGGER.info("round: {}", round.getValue());
             LOGGER.info("randomNumber: {}", randomNumber.getValue());
-            LOGGER.info("originalRandomNumber: {}", originalRandomNumber.getValue());
-
             //监听到事件
             contractService.autoOperationLottery();;
 

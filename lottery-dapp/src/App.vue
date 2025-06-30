@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="bg-img">
+  <div id="app">
     <component :is="layoutComponent">
       <router-view />
     </component>
@@ -31,10 +31,5 @@ const layoutComponent = computed(() => {
   text-align: center;
   /* margin-top: 20px; */
 }
-.bg-img {
-  background-image: url('@/assets/bg1.jpg');
-  background-size: cover;
-  background-position: center;
-  height: 300px;
-}
+
 </style>

@@ -5,6 +5,7 @@ import Components from 'unplugin-vue-components/vite';
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 
 export default defineConfig({
+  base: '/',
   plugins: [vue(),
     Components({
       resolvers: [
@@ -26,5 +27,6 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-  },
-});
+    chunkSizeWarningLimit: 10000 // 单位 KB
+  }
+});0

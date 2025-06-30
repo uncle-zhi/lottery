@@ -24,7 +24,7 @@
   </div>
   <div>
       <a-space>
-    <a-button  @click="setRandomNumber" :loading="preDistributePrizesLoading">设置随机数</a-button>
+    <a-button  @click="simulatePreDis" :loading="preDistributePrizesLoading">模拟预开奖</a-button>
     <a-button  @click="withdrawAll" :loading="distributePrizesAndEndCurrentRoundLoading">提现</a-button>
       </a-space>
   </div>
@@ -101,9 +101,9 @@ const withdrawAll = async() =>{
    }
  
 };
-const setRandomNumber = async () =>{
-   console.log("设置随机数")
-   await LotteryAPI.setLatestRandomNumber(1);
+const simulatePreDis = async () =>{
+   console.log("模拟预开奖")
+   await LotteryAPI.simulatePreDis(2);
 };
 
 const afterOpenChange = bool => {

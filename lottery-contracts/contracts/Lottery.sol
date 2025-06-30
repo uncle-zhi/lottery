@@ -89,26 +89,20 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
         uint8 number,
         uint128 amount
     ); //购买记录 (Ticket purchase record)
-    event PrizeDistributed(address indexed player, uint128 amount); //中奖记录事件 (Prize distribution event)
+    event PrizeDistributed(address indexed player,uint32 indexed round,uint8 winNumber,uint128 betAmount,uint128 prizeAmount); //中奖记录事件 (Prize distribution event)uint128 amount); //中奖记录事件 (Prize distribution event)
     event PrizeClaimed(address indexed player, uint128 amount); //用户提取奖励事件 (Prize claim event)
     event WithdrawAll(address indexed owner, uint128 amount);
     event RandomNumberRequested(uint256 indexed requestId);
     event RandomNumberFulfilled(
-        uint256 indexed requestId,
-        uint8 randomNumber,
-        uint256 originalRandomNumber
+        uint32 indexed round,
+        uint8 randomNumber
     );
     event PreDistributePrizesEvent(uint32 indexed round);
     event DistributePrizesAndEndCurrentRoundEvent(
         uint32 indexed round,
         uint128 prizeAmount
     );
-    event RefundTicketsEvent(
-        uint32 indexed round,
-        address indexed player,
-        uint64 totalPlayer,
-        uint256 totalAmount
-    );
+
     event PreDistributeReward(address indexed player, uint256 reward);
 
     //确保合约不会接受直接的ETH转账，只能通过buyTicket函数参与 (Ensure contract does not accept direct ETH transfers, only via buyTicket)
@@ -233,7 +227,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
             )
         returns (uint256 _requestId) {
             lotteryInfo.lastRequestId = _requestId;
-            emit RandomNumberRequested(requestId);
+            emit RandomNumberRequested(_requestId);
         } catch Error(string memory reason) {
             revert(string(abi.encodePacked(unicode"随机数请求失败：(Random number request failed:)", reason)));
         } catch {
@@ -252,7 +246,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
         );
         uint8 random = uint8((_randomWords[0] % MAX_NUMBER) + 1); // 1 到 5 (1 to 5)
         lotteryInfo.latestRandomNumber = random;
-        emit RandomNumberFulfilled(_requestId, random, _randomWords[0]);
+        emit RandomNumberFulfilled(lotteryInfo.round, random);
     }
 
     function getLotteryStatus() public view returns (LotteryStatus) {
@@ -392,7 +386,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
                     currentRoundTotalPrizeAmount += prizeAmount; // 更新待领取奖金 (Update total pending prize)
                     count++;
                     distributedCount++;
-                    emit PrizeDistributed(ticket.player, prizeAmount);
+                    emit PrizeDistributed(ticket.player,lotteryInfo.round,winNumber,ticket.amount, prizeAmount);
                 }
                 lotteryInfo.cumulativeWinners += count; //更新累计中奖人数 (Update cumulative winners)
                 lotteryInfo
@@ -557,8 +551,10 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
         emit WithdrawAll(contractOwner, uint128(allowedBalance)); // 提取成功 (Withdraw success)
     }
 
-    //因为要测试中奖后的情况，所以添加一个函数，控制中奖号吗，在正式环境中要删除 (For testing, set winning number, should be removed in production)
-    function setLatestRandomNumber(uint8 number) external onlyOwner {
+    //模拟预开奖（用于测试） (Simulate pre-dis (for testing))
+    function simulatePreDis(uint8 number) external onlyOwner {
         lotteryInfo.latestRandomNumber = number;
+        lotteryInfo.isDistributing = true;
+        lotteryInfo.isLotteryOpen = false;
     }
 }

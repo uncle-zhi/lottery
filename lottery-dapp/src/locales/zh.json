@@ -1,7 +1,8 @@
 {
     "breadcrumb": {
     "home": "首页",
-    "bet": "投注页面"
+    "bet": "投注页面",
+    "about": "关于页面"
   },
   "lotteryStatus": {
     "0": "接受投注中",
@@ -50,7 +51,16 @@
     "claimFailed": "奖金领取失败",
     "copySuccess": "复制成功！",
     "copyFailed": "复制失败！",
-    "historyBetEntries": "历史投注次数",
-    "historyBetAmount": "历史投注金额(ETH)"
+    "historyBetEntries": "总投注次数",
+    "historyBetAmount": "总投注金额(ETH)",
+    "showRoundsInfo": "显示历史轮次信息",
+    "roundName": "轮次 ",
+    "winNumber": "中奖号码",
+    "winRecord": "中奖记录",
+    "cancel": "取消",
+    "about": "关于",
+    "loading": "加载中",
+    "betRemainTip": "距离投注结束还有：{ blockCountdown  } 区块",
+    "reward": "奖励(ETH)"
   }
 }

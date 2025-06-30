@@ -43,9 +43,15 @@
         <a-button @click="claimPrize" :loading="claiming" style="margin-left: 20px">
           {{ $t('message.withdrawReward') }}
         </a-button>
+         <a-button @click="showWinRecords" style="margin-left: 20px">
+           {{$t('message.winRecord')}}
+        </a-button>
       </a-col>
     </a-row>
    </div>
+     <a-drawer v-model:open="winRecordsDrawer" :title="$t('message.winRecord') " width="320" :closable="false">
+        <a-table :dataSource="winRecords" :columns="columns" />
+    </a-drawer>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -63,8 +69,51 @@ const myPrize = ref(0);
 const isLoading = ref(true)
 const totalBetCount = ref(0);
 const totalBetAmount = ref(0);
+const winRecordsDrawer = ref(false);
+const winRecords = ref([]);
+const columns = ref([]);
+const player = ref('');
 
 
+const showWinRecords = async() => {
+     columns.value = [
+          {
+            title: t('message.roundName'),
+            dataIndex: 'round',
+            key: 'round',
+          },
+          {
+            title: t('message.betNumber'),
+            dataIndex: 'number',
+            key: 'number',
+          },
+          {
+            title: t('message.bet')+'(ETH)',
+            dataIndex: 'betAmount',
+            key: 'betAmount',
+          },
+          {
+            title: t('message.reward'),
+            dataIndex: 'reward',
+            key: 'reward',
+          },
+        ]
+      winRecords.value = [];
+      const events = await LotteryAPI.getWinRecords(player.value);
+      if(events){
+        for(let i=0; i< events.length;i++){
+          winRecords.value.push({
+                round: events[i].returnValues.round,
+                number: events[i].returnValues.winNumber,
+                betAmount: LotteryAPI.weiToEther(events[i].returnValues.betAmount),
+                reward: LotteryAPI.weiToEther(events[i].returnValues.prizeAmount)
+          })
+        }
+      }
+      console.log('winRecords',winRecords.value);
+   winRecordsDrawer.value = true;
+
+}
 const claimPrize = async () => {
   claiming.value = true; // 设置领取奖金状态为加载中
   console.log('claimPrize')
@@ -83,6 +132,7 @@ const showUserInfo = async () => {
     console.info("刷新用户信息")
     isLoading.value = true;
   const playInfo = await LotteryAPI.getPlayerInfo();
+  player.value = playInfo.player;
   console.log('playInfo',playInfo);
   myPrize.value = playInfo.pendingPrize;
   myBetNumber.value = Number(playInfo.currentBetNumber)==0?"--":Number(playInfo.currentBetNumber);
@@ -106,7 +156,7 @@ const showUserInfo = async () => {
      winCount.value = events.length;
      let amount = 0 
      for(let i = 0; i< events.length;i++){
-       amount += LotteryAPI.weiToEther(events[i].returnValues.amount);
+       amount += LotteryAPI.weiToEther(events[i].returnValues.prizeAmount);
      }
      console.log("amount",amount);
      totalWinAmount.value = amount;

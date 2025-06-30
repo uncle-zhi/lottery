@@ -1,7 +1,7 @@
 <template>
    <div :class="customClass">
       <LoadingOutlined />
-      正在加载...
+      {{ $t('message.loading') }}...
    </div>
 </template>
 <script setup>
