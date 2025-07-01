@@ -55,7 +55,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import {LotteryAPI} from '@/api/lotteryAPI'
+import {LotteryAPI} from '@/api/lotteryApi'
 import { message } from 'ant-design-vue';
 const routes = [
   {
