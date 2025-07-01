@@ -44,7 +44,7 @@
 <script setup>
 import { reactive, ref, computed } from 'vue'
 import {  SUPPORTED_NETWORK } from '@/config/lotteryConfig'
-import {LotteryAPI} from '@/api/lotteryAPI'
+import {LotteryAPI} from '@/api/lotteryApi'
 import { message } from 'ant-design-vue';
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'

@@ -55,7 +55,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import { LotteryAPI } from '@/api/lotteryAPI'
+import { LotteryAPI } from '@/api/lotteryApi'
 import LoadingBlock from './LoadingBlock.vue';
 import { message } from 'ant-design-vue';
 import { useI18n } from 'vue-i18n'

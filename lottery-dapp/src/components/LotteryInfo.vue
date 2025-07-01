@@ -117,7 +117,7 @@
 
 <script setup>
 import { ref, onMounted,onUnmounted } from 'vue'
-import { LotteryAPI } from '@/api/lotteryAPI'
+import { LotteryAPI } from '@/api/lotteryApi'
 import { SyncOutlined, UserOutlined, CopyOutlined } from '@ant-design/icons-vue';
 import { LOTTERY_CONTRACT_ADDRESS } from '@/config/lotteryConfig';
 import { message } from 'ant-design-vue';
