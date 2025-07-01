@@ -23,7 +23,7 @@ FROM nginx:stable-alpine AS production
 RUN rm -rf /etc/nginx/conf.d/default.conf
 
 # 复制自定义 nginx 配置（如果有）
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./docker-deploy/nginx.conf /etc/nginx/conf.d/default.conf
 
 # 复制构建好的静态文件
 COPY --from=build /app/dist /usr/share/nginx/html
