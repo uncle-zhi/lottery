@@ -89,7 +89,6 @@ const resetForm = () => {
 }
 
 const goBet = async (e) => {
-  console.log(e);
   betLoading.value = true
   message.value = ''
   try {
@@ -127,7 +126,7 @@ const onValuesChange = (changedValues, allValues) => {
 }
 
 const gotBetFailed = errorInfo => {
-  console.log('Failed:', errorInfo);
+  
 };
 
 </script>

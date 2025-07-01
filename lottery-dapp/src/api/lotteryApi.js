@@ -112,7 +112,7 @@ export const LotteryAPI = {
         player: accounts[0]
       }
     })
-     console.log('event',events);
+
      return events;
   },
   getPlayerPrizeEvent: async() => {
@@ -288,7 +288,6 @@ export const LotteryAPI = {
   },
   lotteryInfo: async () => {
     const lotteryInfo = await contract.methods.lotteryInfo().call()
-    console.log(lotteryInfo);
     const blockNumber = await web3.eth.getBlockNumber()
     const delay_duration = await contract.methods.DELAY_DURATION().call()
 

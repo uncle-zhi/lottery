@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:gh": "cross-env vite build",
+    "build:gh": "cross-env VITE_PROJECT_NAME=lottery-dapp vite build",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",
     "deploy:gh": "npm run build:gh && xcopy CNAME dist\\ && npm run deploy"
@@ -19,7 +19,6 @@
     "@ethersproject/contracts": "^5.8.0",
     "@ethersproject/providers": "^5.8.0",
     "ant-design-vue": "^4.2.6",
-    "ethers": "^5.8.0",
     "vue": "^3.5.13",
     "vue-i18n": "^9.14.4",
     "vue-router": "^4.5.1",

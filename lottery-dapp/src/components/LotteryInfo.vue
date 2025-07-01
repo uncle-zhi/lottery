@@ -16,7 +16,7 @@
     </a-row >
       <a-row v-if="blockCountdown>=0" style="margin-bottom: 20px;">
       <a-col :span="24">
-         <span  style="margin-right: 2px; color:tomato">
+         <span  style="margin-right: 2px; font-size: large; color:tomato">
            {{ $t('message.betRemainTip',{blockCountdown: blockCountdown }) }}
          </span>
       
@@ -27,16 +27,16 @@
         <div style="margin-bottom: 10px; ">
         <a-space>
           <a-tooltip placement="top" :title="$t('message.refresh') ">
-            <span style="cursor: pointer;font-size: large;" @click="refreshPage">🔄</span>
+            <span style="cursor: pointer;font-size: x-large;" @click="refreshPage">🔄</span>
             <!-- <SyncOutlined @click="refreshPage" /> -->
           </a-tooltip>
           <a-tooltip placement="top" :title="$t('message.showRoundsInfo') ">
-            <span style="cursor: pointer;font-size: large;" @click="showRoundsInfo">🧿</span>
+            <span style="cursor: pointer;font-size: x-large;" @click="showRoundsInfo">🧿</span>
             <!-- <SyncOutlined @click="refreshPage" /> -->
           </a-tooltip>
           <a-tooltip placement="top" :title="$t('message.myInfo') ">
             <!-- <UserOutlined @click="openUserInfo" /> -->
-            <span  style="cursor: pointer;font-size: large;" @click="openUserInfo" >👤</span>
+            <span  style="cursor: pointer;font-size: x-large;" @click="openUserInfo" >👤</span>
           </a-tooltip>
         </a-space>
       </div>
@@ -46,7 +46,8 @@
       <a-col :span="24">
         <div :class="statusClass" style="margin-bottom: 20px; font-size: x-large;">
             <LoadingBlock v-if="isLoading" class="loading" />
-            <a-button type="text" style="color: white;"  v-else-if="canBet" @click="goToBetPage">💵 {{ $t('message.bet') }}</a-button>
+            <span style="color: white; cursor: pointer;"  v-else-if="canBet" @click="goToBetPage">💵 {{ $t('message.bet') }}</span>
+            <!-- <a-button type="text" style="color: white;"  v-else-if="canBet" @click="goToBetPage">💵 {{ $t('message.bet') }}</a-button> -->
             <span v-else>{{ $t('lotteryStatus.'+ lotteryStatus,{ number: winningNumber }) }}</span> 
         </div>
       </a-col>
@@ -195,7 +196,7 @@ const copyContractAddress = async () => {
 };
 
 const afterOpenChange = bool => {
-  console.log('open', bool);
+ 
 };
 
 const openUserInfo = async () => {
@@ -206,7 +207,6 @@ const openUserInfo = async () => {
 };
 
 const refreshPage = async () => {
-  console.log('refreshPage')
   // 刷新当前页面
   await loadLotteryInfo();
 }

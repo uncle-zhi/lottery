@@ -18,6 +18,6 @@ public class LotteryTask {
     @Scheduled(fixedDelay  = 30000)
     public void autoOpLottery() {
         LOGGER.info("执行自动运营任务");
-        contractService.autoOperationLottery();
+//        contractService.autoOperationLottery();
     }
 }

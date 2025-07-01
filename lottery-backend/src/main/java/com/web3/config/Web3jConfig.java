@@ -1,6 +1,7 @@
 package com.web3.config;
 
 import com.web3.contracts.Lottery;
+import com.web3.provider.DynamicGasProvider;
 import com.web3.utils.Utils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,12 +28,14 @@ public class Web3jConfig {
         return Credentials.create(web3jProperties.getPrivateKey());
     }
 
-
+    @Bean
+    public DynamicGasProvider dynamicGasProvider(Web3j web3j){
+        return new DynamicGasProvider(web3j);
+    }
 
     @Bean
-    public Lottery lottery(Web3j web3j, Credentials credentials){
-        ContractGasProvider gasProvider = new DefaultGasProvider();
-        return new Lottery(Utils.loadFileFromClasspath(web3jProperties.getBinFilePath()),web3jProperties.getContractAddress(),web3j,credentials,gasProvider);
+    public Lottery lottery(Web3j web3j, Credentials credentials,DynamicGasProvider dynamicGasProvider ){
+        return new Lottery(Utils.loadFileFromClasspath(web3jProperties.getBinFilePath()),web3jProperties.getContractAddress(),web3j,credentials,dynamicGasProvider);
     }
 
 

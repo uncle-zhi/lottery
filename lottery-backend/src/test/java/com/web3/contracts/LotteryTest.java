@@ -1,6 +1,7 @@
 package com.web3.contracts;
 
 import com.web3.BaseTest;
+import com.web3.provider.DynamicGasProvider;
 import com.web3.struct.LotteryInfo;
 import com.web3.vo.ReturnDataVO;
 import org.junit.Test;
@@ -14,6 +15,9 @@ public class LotteryTest extends BaseTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(LotteryTest.class);
     @Resource
     Lottery lottery;
+
+    @Resource
+    DynamicGasProvider dynamicGasProvider;
 
     @Test
     public void testGetLotteryInfo()  {
@@ -56,5 +60,11 @@ public class LotteryTest extends BaseTest {
     public void testGetBlockNumber(){
         ReturnDataVO<BigInteger> returnDataVO = lottery.getBlockNumber();
         LOGGER.info("最新的区块高度为：{}",returnDataVO.getData());
+    }
+
+    @Test
+    public void testDynamicGasProvider(){
+         BigInteger gasPrice = dynamicGasProvider.getGasPrice("");
+         LOGGER.info("gasPrice: {}",gasPrice);
     }
 }

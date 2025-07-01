@@ -110,13 +110,11 @@ const showWinRecords = async() => {
           })
         }
       }
-      console.log('winRecords',winRecords.value);
    winRecordsDrawer.value = true;
 
 }
 const claimPrize = async () => {
   claiming.value = true; // 设置领取奖金状态为加载中
-  console.log('claimPrize')
   try {
     await LotteryAPI.claimPrize();
     await showUserInfo(); // 重新加载我的信息
@@ -129,26 +127,13 @@ const claimPrize = async () => {
 };
 
 const showUserInfo = async () => {
-    console.info("刷新用户信息")
-    isLoading.value = true;
+  isLoading.value = true;
   const playInfo = await LotteryAPI.getPlayerInfo();
   player.value = playInfo.player;
   console.log('playInfo',playInfo);
   myPrize.value = playInfo.pendingPrize;
   myBetNumber.value = Number(playInfo.currentBetNumber)==0?"--":Number(playInfo.currentBetNumber);
-  console.log("myPrize",myPrize.value);
-  console.log("myBetNumber",myBetNumber.value);
-  console.log("myBetAmount",myBetAmount.value);
-
   myBetAmount.value = playInfo.currentBetAmount == 0 ? "--" : Number(playInfo.currentBetAmount);
-  console.log("myBetAmount",myBetAmount.value);
-  console.log("myPrize",myPrize.value);
-  console.log("winCount",winCount.value);
-  console.log("totalWinAmount",totalWinAmount.value);
-  console.log("totalBetCount",totalBetCount.value);
-  console.log("totalBetAmount",totalBetAmount.value);
-
-
   open.value = true;
   const events = await LotteryAPI.getPlayerPrizeEvent();
    
@@ -158,7 +143,6 @@ const showUserInfo = async () => {
      for(let i = 0; i< events.length;i++){
        amount += LotteryAPI.weiToEther(events[i].returnValues.prizeAmount);
      }
-     console.log("amount",amount);
      totalWinAmount.value = amount;
   }
 

@@ -27,6 +27,19 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    chunkSizeWarningLimit: 10000 // 单位 KB
+    chunkSizeWarningLimit: 1000, // 单位 KB
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('ant-design-vue')) return 'ant-design-vue';
+            if (id.includes('@ant-design/icons-vue')) return 'ant-icons';
+            if (id.includes('ethers')) return 'ethers';
+            if (id.includes('web3')) return 'web3';
+            return 'vendor';
+          }
+        }
+      }
+    }
   }
-});0
+});

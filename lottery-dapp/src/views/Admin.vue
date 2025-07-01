@@ -92,7 +92,6 @@ const lotteryState = reactive({
 });
 
 const withdrawAll = async() =>{
-   console.log("提现");
    try{
       await LotteryAPI.withdrawAll();
       message.success('提现成功');
@@ -102,7 +101,6 @@ const withdrawAll = async() =>{
  
 };
 const simulatePreDis = async () =>{
-   console.log("模拟预开奖")
    await LotteryAPI.simulatePreDis(2);
 };
 
