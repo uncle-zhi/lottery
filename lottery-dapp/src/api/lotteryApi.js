@@ -5,6 +5,45 @@ let web3
 let contract
 let isInitialized = false
 
+/**
+ * 预估合约函数调用的手续费（以 ETH 为单位）
+ * @param {string} methodName - 要调用的方法名（字符串）
+ * @param {Array} methodArgs - 方法参数数组
+ * @param {string} fromAddress - 交易发起地址
+ * @param {string|number} [value] - 发送的 ETH 金额（单位：wei，可选）
+ * @returns {Promise<string>} - 返回预估费用，单位为 ETH（字符串）
+ */
+export const estimateTxCost =  async({
+  methodName,
+  methodArgs = [],
+  fromAddress,
+  value = '0',
+}) => {
+  if ( !methodName || !fromAddress) {
+    throw new Error('Missing required parameters');
+  }
+  try {
+    // 1. 预估 gas 用量
+    const gasEstimate = await contract.methods[methodName](...methodArgs).estimateGas({
+      from: fromAddress,
+      value,
+    });
+
+    // 2. 获取当前 gas 价格（wei）
+    const gasPrice = await web3.eth.getGasPrice();
+
+    // 3. 计算总费用（gas * gasPrice）
+    const totalCost = BigInt(gasEstimate) * BigInt(gasPrice);
+
+    // 4. 转换为 ETH 并返回
+    return web3.utils.fromWei(totalCost.toString(), 'ether');
+  } catch (err) {
+    console.error('[Gas Estimation Error]', err);
+    throw err;
+  }
+}
+
+
 export const getHistoryEvents = async (eventName, fromBlock) => {
   contract.getPastEvents(eventName, {
     fromBlock: fromBlock,
@@ -189,6 +228,17 @@ export const LotteryAPI = {
     const receipt = await contract.methods.claimPrize().send({ from: accounts[0] });
     return receipt;
   },
+  estimateDistributePrizesAndEndCurrentRoundFee: async() => {
+     await checkNetwork();  //检查网络
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    let estimateFee =await  estimateTxCost({
+        methodName: 'distributePrizesAndEndCurrentRound',
+        methodArgs: [],
+        fromAddress: accounts[0]
+      })
+      console.info('estimateDistributePrizesAndEndCurrentRoundFee: ',estimateFee);
+      return estimateFee;
+  },
   distributePrizesAndEndCurrentRound: async () => {
     await checkNetwork();  //检查网络
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -219,6 +269,16 @@ export const LotteryAPI = {
     return receipt;
   },
   acceptOwnership: (from) => contract.methods.acceptOwnership().send({ from }),
+  estimatePreDistributePrizesFee: async() => {
+     await checkNetwork();  //检查网络
+     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+     let estimateFee = await estimateTxCost({
+        methodName: 'preDistributePrizes',
+        methodArgs: [],
+        fromAddress: accounts[0]
+      })
+      console.info('estimatePreDistributePrizesFee: ',estimateFee);
+  },
   preDistributePrizes: async () => {
     await checkNetwork();  //检查网络
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });

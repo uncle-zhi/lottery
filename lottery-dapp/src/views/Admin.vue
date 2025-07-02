@@ -138,6 +138,9 @@ const preDistributePrizes = async () => {
   preDistributePrizesLoading.value = true;
    console.log('预开奖');
    try {
+
+     await LotteryAPI.estimatePreDistributePrizesFee();
+
      await LotteryAPI.preDistributePrizes();
      message.success('预开奖成功！');
    } catch (error) {
@@ -150,6 +153,8 @@ const distributePrizesAndEndCurrentRound = async () => {
   distributePrizesAndEndCurrentRoundLoading.value = true;
    console.log('号码开奖');
    try {
+    await LotteryAPI.estimateDistributePrizesAndEndCurrentRoundFee();  // 预估手续费
+
      await LotteryAPI.distributePrizesAndEndCurrentRound();
      message.success('号码开奖成功！');
    } catch (error) {
