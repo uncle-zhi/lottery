@@ -209,7 +209,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
     // `false` to pay in LINK
     function requestRandomNumber(
         bool enableNativePayment
-    ) private returns (uint256 requestId) {
+    ) private  {
         try
             s_vrfCoordinator.requestRandomWords(
                 VRFV2PlusClient.RandomWordsRequest({
