@@ -1,5 +1,8 @@
 // filepath: lottery-contracts/scripts/deploy.js
 const { ethers, network } = require("hardhat");
+const { ProxyAgent, setGlobalDispatcher } = require("undici"); // 设置代理,解决了hardhat-verify无法连接的问题
+const proxyAgent = new ProxyAgent("http://127.0.0.1:10809");  // 设置代理地址，确保你的代理服务运行在这个地址上
+setGlobalDispatcher(proxyAgent);
 require('dotenv').config();
 
 async function main() {
