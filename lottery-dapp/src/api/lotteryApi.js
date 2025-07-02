@@ -68,7 +68,7 @@ export const checkNetwork = async () => {
   const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
   console.log(`当前网络 ID: ${currentChainId}, 目标网络 ID: ${targetChainId}`);
   if (currentChainId !== targetChainId) {
-    alert(`请在钱包中切换到 ${SUPPORTED_NETWORK.chainName} 测试网络`);
+    alert(`请在钱包中切换到 ${SUPPORTED_NETWORK.chainName} 网络`);
     // 可自动请求切换网络
     try {
       await window.ethereum.request({
@@ -112,8 +112,9 @@ export const LotteryAPI = {
      return Number(web3.utils.fromWei(amount , 'ether'))
   },
   getWinRecords: async(player) => {
+      const latestBlock = await web3.eth.getBlockNumber();
       const events = await contract.getPastEvents("PrizeDistributed", {
-        fromBlock: 0,
+        fromBlock: Number(latestBlock)-5000,
         toBlock: 'latest',
         filter: {
           player: player
@@ -133,8 +134,9 @@ export const LotteryAPI = {
           filterRound.push(i);
         }
       }
+      const latestBlock = await web3.eth.getBlockNumber();
     const events = await contract.getPastEvents("RandomNumberFulfilled", {
-        fromBlock: 0,
+        fromBlock: Number(latestBlock)-5000,
         toBlock: 'latest',
         filter: {
           round: filterRound
@@ -144,8 +146,9 @@ export const LotteryAPI = {
   },
   getTicketPurchasedEvent: async() => {
     const accounts = await web3.eth.getAccounts();
+    const latestBlock = await web3.eth.getBlockNumber();
     const events = await contract.getPastEvents("TicketPurchased", {
-      fromBlock: 0,
+      fromBlock: Number(latestBlock)-5000,
       toBlock: 'latest',
       filter: {
         player: accounts[0]
@@ -156,8 +159,9 @@ export const LotteryAPI = {
   },
   getPlayerPrizeEvent: async() => {
     const accounts = await web3.eth.getAccounts();
+    const latestBlock = await web3.eth.getBlockNumber();
     const events = await contract.getPastEvents("PrizeDistributed", {
-      fromBlock: 0,
+      fromBlock: Number(latestBlock)-5000,
       toBlock: 'latest',
       filter: {
         player: accounts[0]
