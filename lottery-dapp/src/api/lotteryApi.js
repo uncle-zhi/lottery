@@ -64,7 +64,6 @@ export const checkNetwork = async () => {
     return;
   }
   const targetChainId = '0x' + SUPPORTED_NETWORK.chainId.toString(16);
-
   const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
   console.log(`当前网络 ID: ${currentChainId}, 目标网络 ID: ${targetChainId}`);
   if (currentChainId !== targetChainId) {
@@ -76,25 +75,7 @@ export const checkNetwork = async () => {
         params: [{ chainId: targetChainId }]
       });
     } catch (switchError) {
-      // 如果没有添加过 Sepolia，可以请求添加
-      if (switchError.code === 4902) {
-        try {
-          await window.ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [{
-              chainId: sepoliaChainId,
-              chainName: "Sepolia Test Network",
-              rpcUrls: ["https://rpc.sepolia.org"],
-              nativeCurrency: { name: "SepoliaETH", symbol: "ETH", decimals: 18 },
-              blockExplorerUrls: ["https://sepolia.etherscan.io"]
-            }]
-          });
-        } catch (addError) {
-          alert("添加 Sepolia 网络失败，请手动切换");
-        }
-      } else {
-        alert("切换网络失败，请手动切换到 Sepolia");
-      }
+        alert(`切换网络失败，请手动切换到 ${SUPPORTED_NETWORK.chainName}`);
     }
   }
 }
@@ -351,6 +332,8 @@ export const LotteryAPI = {
        return roundData;
   },
   lotteryInfo: async () => {
+
+    await checkNetwork();
     const lotteryInfo = await contract.methods.lotteryInfo().call()
     const blockNumber = await web3.eth.getBlockNumber()
     const delay_duration = await contract.methods.DELAY_DURATION().call()

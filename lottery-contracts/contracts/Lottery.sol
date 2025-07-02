@@ -73,7 +73,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
     uint public constant MIN_BET_AMOUNT = 0.01 ether; // 最小投注金额 (Minimum bet amount)
     uint8 public constant MAX_NUMBER = 5; // 最大购票号码 (Maximum ticket number)
     uint8 public constant MIN_NUMBER = 1; // 最小购票号码 (Minimum ticket number)
-    uint8 public constant ROUND_DURATION = 10; // 每轮持续的区块数 (Blocks per round)
+    uint8 public constant ROUND_DURATION = 100; // 每轮持续的区块数 (Blocks per round)
     uint32 public constant INIT_ROUND_DURATION = 100000000; //初始设置的每轮区间大小，在第一个人下注后，自动调整为下注区块高度+ROUND_DURATION ，以避免因无人投注而结束当前轮，浪费gas (Initial round duration, auto-adjust after first bet to avoid ending round with no bets)
     uint8 public constant DELAY_DURATION = 2; // 延迟开奖，防止矿工攻击，单位为区块数 (Delay reveal to prevent miner attack, in blocks)
     uint128 public constant PRE_DISTRIBUTE_PRIZES_REWARD = 0.001 ether; //为调用预开奖者发放奖励 (Reward for pre-reveal caller)
