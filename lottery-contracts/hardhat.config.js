@@ -26,6 +26,11 @@ module.exports = {
       url: process.env.SEPOLIA_RPC_URL,
       accounts: [process.env.PRIVATE_KEY],
     },
+    bsctest: {
+      url: process.env.BSC_TESTNET_RPC,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 97
+    }
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY, // 在 .env 文件中配置
