@@ -53,6 +53,8 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
     VRFConfig public vrfConfig;
     LotteryInfo public lotteryInfo;
 
+    uint32 public  ROUND_DURATION = 100;
+
     // 定义枚举类型：彩票状态 (Define enum type: Lottery status)
     enum LotteryStatus {
         AcceptingBets, // 接受投注中 (Accepting bets)
@@ -73,7 +75,6 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
     uint public constant MIN_BET_AMOUNT = 0.01 ether; // 最小投注金额 (Minimum bet amount)
     uint8 public constant MAX_NUMBER = 5; // 最大购票号码 (Maximum ticket number)
     uint8 public constant MIN_NUMBER = 1; // 最小购票号码 (Minimum ticket number)
-    uint8 public constant ROUND_DURATION = 100; // 每轮持续的区块数 (Blocks per round)
     uint32 public constant INIT_ROUND_DURATION = 100000000; //初始设置的每轮区间大小，在第一个人下注后，自动调整为下注区块高度+ROUND_DURATION ，以避免因无人投注而结束当前轮，浪费gas (Initial round duration, auto-adjust after first bet to avoid ending round with no bets)
     uint8 public constant DELAY_DURATION = 2; // 延迟开奖，防止矿工攻击，单位为区块数 (Delay reveal to prevent miner attack, in blocks)
     uint128 public constant PRE_DISTRIBUTE_PRIZES_REWARD = 0.001 ether; //为调用预开奖者发放奖励 (Reward for pre-reveal caller)
@@ -172,10 +173,12 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
         uint256 subscriptionId,
         address _vrfCoordinator,
         bytes32 _keyHash,
-        uint8 _rewardRate // 返奖比例，0-100 (Reward rate, 0-100)
+        uint8 _rewardRate, // 返奖比例，0-100 (Reward rate, 0-100)
+        uint32 _roundDuration  //每轮的区间大小 (Round duration)
     ) VRFConsumerBaseV2Plus(_vrfCoordinator) {
         require(_rewardRate > 0 && _rewardRate <= 100, unicode"无效的返奖比例 (Invalid reward rate)");
         contractOwner = msg.sender;
+        ROUND_DURATION = _roundDuration; // 设置每轮的区间大小 (Set round duration)
         initBlockNumber = block.number; // 记录合约部署时的区块高度 (Record block number at contract deployment)
         vrfConfig = VRFConfig({
             subscriptionId: subscriptionId,
@@ -508,7 +511,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
         // 确保投注金额大于等于最小投注金额 (Ensure bet amount >= minimum)
         require(
             msg.value >= MIN_BET_AMOUNT,
-            unicode"最小投注金额为 0.01 ether (Minimum bet is 0.01 ether)"
+            unicode"最小投注金额为 0.01  (Minimum bet is 0.01 )"
         );
         require(msg.value <= type(uint128).max, unicode"投注金额过大 (Bet amount too large)");
         Ticket memory ticket = Ticket({
@@ -549,12 +552,5 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
         (bool sent, ) = payable(contractOwner).call{value: allowedBalance}("");
         require(sent, unicode"提取失败 (Withdraw failed)");
         emit WithdrawAll(contractOwner, uint128(allowedBalance)); // 提取成功 (Withdraw success)
-    }
-
-    //模拟预开奖（用于测试） (Simulate pre-dis (for testing))
-    function simulatePreDis(uint8 number) external onlyOwner {
-        lotteryInfo.latestRandomNumber = number;
-        lotteryInfo.isDistributing = true;
-        lotteryInfo.isLotteryOpen = false;
     }
 }
