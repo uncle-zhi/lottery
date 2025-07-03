@@ -67,7 +67,7 @@ export const checkNetwork = async () => {
   const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
   console.log(`当前网络 ID: ${currentChainId}, 目标网络 ID: ${targetChainId}`);
   if (currentChainId !== targetChainId) {
-    alert(`请在钱包中切换到 ${SUPPORTED_NETWORK.chainName} 网络`);
+    // alert(`请在钱包中切换到 ${SUPPORTED_NETWORK.chainName} 网络`);
     // 可自动请求切换网络
     try {
       await window.ethereum.request({
@@ -80,7 +80,7 @@ export const checkNetwork = async () => {
   }
 }
 
-export const initWeb3AndContract = () => {
+export const initWeb3AndContract =  () => {
   if (!isInitialized) {
     web3 = new Web3(window.ethereum)
     contract = new web3.eth.Contract(LOTTERY_ABI, LOTTERY_CONTRACT_ADDRESS)

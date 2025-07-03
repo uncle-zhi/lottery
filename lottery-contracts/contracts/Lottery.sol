@@ -53,7 +53,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
     VRFConfig public vrfConfig;
     LotteryInfo public lotteryInfo;
 
-    uint32 public  ROUND_DURATION = 100;
+    uint32 public ROUND_DURATION = 100;
 
     // 定义枚举类型：彩票状态 (Define enum type: Lottery status)
     enum LotteryStatus {
@@ -76,7 +76,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
     uint8 public constant MAX_NUMBER = 5; // 最大购票号码 (Maximum ticket number)
     uint8 public constant MIN_NUMBER = 1; // 最小购票号码 (Minimum ticket number)
     uint32 public constant INIT_ROUND_DURATION = 100000000; //初始设置的每轮区间大小，在第一个人下注后，自动调整为下注区块高度+ROUND_DURATION ，以避免因无人投注而结束当前轮，浪费gas (Initial round duration, auto-adjust after first bet to avoid ending round with no bets)
-    uint8 public constant DELAY_DURATION = 2; // 延迟开奖，防止矿工攻击，单位为区块数 (Delay reveal to prevent miner attack, in blocks)
+    uint8 public constant DELAY_DURATION = 10; // 延迟开奖，防止矿工攻击，单位为区块数 (Delay reveal to prevent miner attack, in blocks)
     uint128 public constant PRE_DISTRIBUTE_PRIZES_REWARD = 0.001 ether; //为调用预开奖者发放奖励 (Reward for pre-reveal caller)
     uint128 public constant DISTRIBUTE_PRIZES_REWARD = 0.001 ether; //为调用预开奖者发放奖励 (Reward for distribute prizes caller)
     uint8 public constant BATCH_COUNT = 50; //批处理的数量, 每批次发奖的人数（避免多人中奖导致发奖时gas超出限制而失效） (Batch size for prize distribution to avoid gas limit issues)
@@ -542,7 +542,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
         return soldTickets[lotteryInfo.round];
     }
 
-    /// @notice 提取合约剩余资金，仅限 owner 调用，并在彩票关闭后调用 (Withdraw contract remaining funds, only owner, only after lottery closed)
+    /// @notice 提取合约剩余资金，仅限 owner 调用，只能在彩票关闭后调用 (Withdraw contract remaining funds, only owner, only after lottery closed)
     function withdrawAll() external onlyOwner onlyReveald nonReentrant {
         uint256 reserved = uint256(lotteryInfo.totalPendingRewards) +
             uint256(lotteryInfo.totalPrizePool);

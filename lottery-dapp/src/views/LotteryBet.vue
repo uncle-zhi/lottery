@@ -85,7 +85,7 @@ const tailLayout = {
 }
 const resetForm = () => {
   formState.betNumber = ''
-  formState.betAmount = ''
+  formState.betAmount = '0.01'
 }
 
 const goBet = async (e) => {

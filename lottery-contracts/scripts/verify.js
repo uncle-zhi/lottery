@@ -5,7 +5,7 @@ setGlobalDispatcher(proxyAgent);
 require('dotenv').config();
 
 async function main() {
-  const contractAddress = "0xABF2Fc9f342b42Ec79AAaFcF5Bc3d604f3bf3e89";
+  const contractAddress = "0x9023A521869a425eC6E4dfd037D2Be0056214bee";
   let constructorArgs = [];
 
   if (network.name === "sepolia") {
@@ -18,11 +18,11 @@ async function main() {
     ]
   } else if (network.name === "bsctest") {
     constructorArgs = [
-      BigInt(process.env.SUBSCRIPTION_ID_BCS_TEST), // 替换为实际订阅ID
-      process.env.VRF_COORDINATOR_BCS_TEST, // 替换为实际地址
-      process.env.KEY_HASH_BCS_TEST, // 替换为实际keyHash
-      process.env.REWARD_RATE_BCS_TEST, // 返奖比例
-      process.env.ROUND_DURATION_BCS_TEST
+      BigInt(process.env.SUBSCRIPTION_ID_BSC_TEST), // 替换为实际订阅ID
+      process.env.VRF_COORDINATOR_BSC_TEST, // 替换为实际地址
+      process.env.KEY_HASH_BSC_TEST, // 替换为实际keyHash
+      process.env.REWARD_RATE_BSC_TEST, // 返奖比例
+      process.env.ROUND_DURATION_BSC_TEST
     ]
   } else if(network.name === "amoy"){
     constructorArgs = [
