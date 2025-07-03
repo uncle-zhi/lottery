@@ -44,11 +44,6 @@ public class RandomNumberFulfilledEvent implements ApplicationRunner {
     ContractService contractService;
 
     public void openListen(BigInteger startBlockNumber){
-        //关闭
-        if(true){
-            return;
-        }
-
         Event randomNumberFulfilledEvent = new Event("RandomNumberFulfilled",
                 Arrays.asList(
                         new TypeReference<Uint32>(true) {}, // round(indexed)
