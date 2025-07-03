@@ -15,5 +15,6 @@ public class Web3jProperties {
     private String contractAddress;
     private String privateKey;
     private String binFilePath;
+    private Long chainId;
 
 }

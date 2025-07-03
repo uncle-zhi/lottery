@@ -5,7 +5,7 @@ setGlobalDispatcher(proxyAgent);
 require('dotenv').config();
 
 async function main() {
-  const contractAddress = "0x9023A521869a425eC6E4dfd037D2Be0056214bee";
+  const contractAddress = "0xa54c573Abf21AD98b856C2A283829d512F6aF472";
   let constructorArgs = [];
 
   if (network.name === "sepolia") {
@@ -31,6 +31,14 @@ async function main() {
       process.env.KEY_HASH_AMOY, // 替换为实际keyHash
       process.env.REWARD_RATE_AMOY,  // 返奖比例
       process.env.ROUND_DURATION_AMOY
+    ]
+  }else if(network.name === "polygon"){
+    constructorArgs = [
+      BigInt(process.env.SUBSCRIPTION_ID_POLYGON), // 替换为实际订阅ID
+      process.env.VRF_COORDINATOR_POLYGON,// 替换为实际地址
+      process.env.KEY_HASH_POLYGON, // 替换为实际keyHash
+      process.env.REWARD_RATE_POLYGON,  // 返奖比例
+      process.env.ROUND_DURATION_POLYGON
     ]
   }else{
     throw new Error(`未为网络 ${network.name} 配置参数`);

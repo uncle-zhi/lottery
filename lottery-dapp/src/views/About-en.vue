@@ -12,8 +12,8 @@
       <h2>🎮 Game Rules</h2>
       <ul>
         <li>Each round is started by the admin. Players can purchase tickets during the open period.</li>
-        <li>Choose a number between 1 and 5 and pay the required ETH (minimum 0.01 ETH per ticket) to place a bet.</li>
-        <li>Once the first player places a bet, a countdown begins. The round ends after approximately 100 blocks.</li>
+        <li>Choose a number between 1 and 5 and pay the required POL (minimum 0.01 POL per ticket) to place a bet.</li>
+        <li>Once the first player places a bet, a countdown begins. The round ends after approximately 500 blocks.</li>
         <li>After the round ends, a random number is generated via <strong>Chainlink VRF</strong> to determine the winning number.</li>
         <li>85% of the total bet amount is distributed to winners based on their stake. If no winner, the prize rolls over to the next round.</li>
         <li>Winners can view their rewards in the 👤 <strong>My Info</strong> page and manually withdraw their earnings.</li>
@@ -34,7 +34,7 @@
       <h2>🛡️ Security & Fairness</h2>
       <ul>
         <li>Smart contract code is open-source and verified on-chain. Can be audited anytime.</li>
-        <li>Admin has no access to the prize pool. 15% of the bet amount is reserved to cover operational gas fees.</li>
+        <li>Admin has no access to the prize pool. </li>
         <li>All contract parameters and draws are handled on-chain, with full transparency and no admin interference.</li>
         <li>Only the player can withdraw their reward. Admin cannot access user funds.</li>
         <li><strong>Chainlink VRF</strong> provides verifiable random numbers to ensure fairness.</li>

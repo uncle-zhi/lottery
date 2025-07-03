@@ -5,9 +5,11 @@
          <span style="margin-right: 2px; color:gray">
           {{$t('message.contractAddress')}}：
          </span>
-         <span ref="contractAddr" style="margin-right: 5px; color:gray">
-          {{contractAddress}}
-         </span>
+         <a :href="contractHref" target="_blank" style="text-decoration: none; color: inherit;">
+            <span ref="contractAddr" style="margin-right: 5px; color:gray">
+              {{contractAddress}}
+            </span>
+         </a>
          <a-tooltip placement="top" :title="$t('message.copyAddress')">
           <span style="cursor: pointer;" @click="copyContractAddress">📋</span>
          
@@ -47,6 +49,7 @@
         <div :class="statusClass" style="margin-bottom: 20px; font-size: x-large;">
             <LoadingBlock v-if="isLoading" class="loading" />
             <span style="color: white; cursor: pointer;"  v-else-if="canBet" @click="goToBetPage">💵 {{ $t('message.bet') }}</span>
+            <span style="color: green;font-size: large;"  v-else-if="hadBet" >{{t('message.userBetInfo',{betNumber: currentBetNumber,betAmount: currentBetAmount})}}</span>
             <!-- <a-button type="text" style="color: white;"  v-else-if="canBet" @click="goToBetPage">💵 {{ $t('message.bet') }}</a-button> -->
             <span v-else>{{ $t('lotteryStatus.'+ lotteryStatus,{ number: winningNumber }) }}</span> 
         </div>
@@ -125,6 +128,7 @@ import LoadingBlock from './LoadingBlock.vue';
 import UserInfo from '@/components/UserInfo.vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { Contract } from 'web3';
 const { t } = useI18n()
 const router = useRouter();
 const contractAddress = ref("");
@@ -138,6 +142,9 @@ const cumulativeWinners = ref(0);
 const cumulativePrizeAmount = ref(0);
 const userInfoRef = ref(null);
 const canBet = ref(false); // 是否可以投注
+const currentBetNumber = ref("--");
+const currentBetAmount = ref(0);
+
 
 const contractAddr = ref(null);
 const statusClass = ref("");
@@ -150,8 +157,12 @@ const openRoundRecord = ref(false);
 const roundRecords = ref([]);
 const roundRecordsColumns = ref([])
 const round = ref(0);
-const intervalId = ref(null)
+const intervalId = ref(null);
+const contractHref = ref("");
 const emit = defineEmits(['update:round']) // 自定义事件
+const hadBet = ref(false);
+const userBetInfo = ref("");
+
 
 const showRoundsInfo = async() => {
   // 跳转到轮次信息页面
@@ -211,7 +222,6 @@ const refreshPage = async () => {
   await loadLotteryInfo();
 }
 const loadLotteryInfo = async () => {
-
   isLoading.value = true; // 开始加载状态
   try {
     contractAddress.value = LOTTERY_CONTRACT_ADDRESS;
@@ -223,8 +233,20 @@ const loadLotteryInfo = async () => {
     stateDesc.value = lotteryInfo.simpleState; // 更新状态描述
     if(lotteryInfo.status ==0){
       statusClass.value = "Betting";
-      canBet.value = true;
+      //查询用户信息
+      const playInfo = await LotteryAPI.getPlayerInfo();
+      if(playInfo.currentBetAmount > 0){
+         canBet.value = false;
+         currentBetNumber.value = playInfo.currentBetNumber;
+         currentBetAmount.value = playInfo.currentBetAmount;
+        //  userBetInfo.value = t('message.userBetInfo',{betNumber: playInfo.currentBetNumber,betAmount: playInfo.currentBetAmount});
+         hadBet.value = true;
+      }else{
+        hadBet.value = false;
+        canBet.value = true;
+      }
     }else{
+      hadBet.value = false;
       statusClass.value = "NoBetting";
       canBet.value = false;
     }
@@ -243,7 +265,6 @@ const loadLotteryInfo = async () => {
        blockCountdown.value = lotteryInfo.endNumber - lotteryInfo.blockNumber ;
     }else{
        blockCountdown.value = "--";
-
     }
     
   }
@@ -256,6 +277,8 @@ const loadLotteryInfo = async () => {
 
 const intervalReload = () => {
   loadLotteryInfo();
+  contractHref.value = `https://polygonscan.com/address/${contractAddress.value}`;
+
   //每30秒刷新一次页面
   if (!intervalId.value) {
   intervalId.value =setInterval(() => {

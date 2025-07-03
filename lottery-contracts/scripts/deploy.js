@@ -31,6 +31,12 @@ async function main() {
       keyHash = process.env.KEY_HASH_AMOY; // 替换为实际keyHash
       rewardRate = process.env.REWARD_RATE_AMOY;  // 返奖比例
       roundDuration = process.env.ROUND_DURATION_AMOY;  // 轮次时长
+  }else if(network.name === "polygon"){
+      subscriptionId = BigInt(process.env.SUBSCRIPTION_ID_POLYGON); // 替换为实际订阅ID
+      vrfCoordinator = process.env.VRF_COORDINATOR_POLYGON; // 替换为实际地址
+      keyHash = process.env.KEY_HASH_POLYGON; // 替换为实际keyHash
+      rewardRate = process.env.REWARD_RATE_POLYGON;  // 返奖比例
+      roundDuration = process.env.ROUND_DURATION_POLYGON;  // 轮次时长
   }else{
     throw new Error(`未为网络 ${network.name} 配置参数`);
   }

@@ -6,28 +6,28 @@
     sub-title=""
   />
   <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">🎰 欢迎来到管理后台</h1>
-    <div style="color: red;">{{ adminMessage }}</div>
+    <h1 class="text-2xl font-bold mb-4">🎰 管理后台</h1>
+    <!-- <div style="color: red;">{{ adminMessage }}</div> -->
     <div>
 </div>
   <div>
     <a-space>
-    <a-button  @click="showCurrentRoundInfo" :loading="showCurrentRoundInfoLoading">显示当前轮信息</a-button>
-    <a-button  @click="startNewRound" :loading="startNewRoundLoading">开启新一轮投注</a-button>
+    <a-button  @click="showCurrentRoundInfo" :loading="showCurrentRoundInfoLoading">信息</a-button>
+    <a-button  @click="startNewRound" :loading="startNewRoundLoading">开启</a-button>
     </a-space>
   </div>
     <div>
       <a-space>
-    <a-button  @click="preDistributePrizes" :loading="preDistributePrizesLoading">预开奖</a-button>
-    <a-button  @click="distributePrizesAndEndCurrentRound" :loading="distributePrizesAndEndCurrentRoundLoading">开奖</a-button>
+    <a-button  @click="preDistributePrizes" :loading="preDistributePrizesLoading">摇奖</a-button>
+    <a-button  @click="distributePrizesAndEndCurrentRound" :loading="distributePrizesAndEndCurrentRoundLoading">派奖</a-button>
       </a-space>
   </div>
-  <div>
+  <!-- <div>
       <a-space>
     <a-button  @click="simulatePreDis" :loading="preDistributePrizesLoading">模拟预开奖</a-button>
     <a-button  @click="withdrawAll" :loading="distributePrizesAndEndCurrentRoundLoading">提现</a-button>
       </a-space>
-  </div>
+  </div> -->
   </div>
 
   <a-drawer
@@ -138,9 +138,6 @@ const preDistributePrizes = async () => {
   preDistributePrizesLoading.value = true;
    console.log('预开奖');
    try {
-
-     await LotteryAPI.estimatePreDistributePrizesFee();
-
      await LotteryAPI.preDistributePrizes();
      message.success('预开奖成功！');
    } catch (error) {
@@ -153,8 +150,6 @@ const distributePrizesAndEndCurrentRound = async () => {
   distributePrizesAndEndCurrentRoundLoading.value = true;
    console.log('号码开奖');
    try {
-    await LotteryAPI.estimateDistributePrizesAndEndCurrentRoundFee();  // 预估手续费
-
      await LotteryAPI.distributePrizesAndEndCurrentRound();
      message.success('号码开奖成功！');
    } catch (error) {

@@ -10,6 +10,7 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.Credentials;
+import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.RemoteFunctionCall;
@@ -17,6 +18,7 @@ import org.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
+import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 
 import javax.annotation.Resource;
@@ -29,8 +31,8 @@ public class Lottery extends Contract {
 
     @Resource
     Web3jProperties web3jProperties;
-    public Lottery(String contractBinary, String contractAddress, Web3j web3j, Credentials credentials,ContractGasProvider gasProvider) {
-        super(contractBinary, contractAddress, web3j, credentials, gasProvider);
+    public Lottery(String contractBinary, String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider gasProvider) {
+        super( new EnsResolver(web3j),contractBinary, contractAddress, web3j, transactionManager, gasProvider);
     }
 
     private <T> ReturnDataVO<T> commonRemoteCallSingleValueReturn(Function function, Class<T> clazz){

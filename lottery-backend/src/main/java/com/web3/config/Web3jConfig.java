@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.RawTransactionManager;
+import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
@@ -35,7 +37,8 @@ public class Web3jConfig {
 
     @Bean
     public Lottery lottery(Web3j web3j, Credentials credentials,DynamicGasProvider dynamicGasProvider ){
-        return new Lottery(Utils.loadFileFromClasspath(web3jProperties.getBinFilePath()),web3jProperties.getContractAddress(),web3j,credentials,dynamicGasProvider);
+        TransactionManager txManager = new RawTransactionManager(web3j, credentials, web3jProperties.getChainId()); // Polygon 主网 chainId
+        return new Lottery(Utils.loadFileFromClasspath(web3jProperties.getBinFilePath()),web3jProperties.getContractAddress(),web3j,txManager,dynamicGasProvider);
     }
 
 

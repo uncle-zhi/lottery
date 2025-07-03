@@ -37,8 +37,16 @@ module.exports = {
       accounts: [process.env.PRIVATE_KEY],
       chainId: 80002,
     },
+    polygon: {
+      url: process.env.POLYGON_RPC_URL,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 137,
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY, // 在 .env 文件中配置
   },
+    mocha: {
+    timeout: 60000 // 设置测试和验证超时时间为60秒
+  }
 };

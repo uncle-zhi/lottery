@@ -159,7 +159,7 @@ export const LotteryAPI = {
       console.log("预测成功，可以调用，返回值:", canDistribute);
     } catch (error) {
       console.error("Error checking distribution eligibility:", error);
-      throw new Error(error.message || "无法提现");
+      throw new Error(error.data.message || "无法提现");
     }
     await contract.methods.withdrawAll().send({from: accounts[0]});
   },
@@ -168,7 +168,13 @@ export const LotteryAPI = {
     await contract.methods.simulatePreDis(num).send({from: accounts[0]});
   },
   getRequireError: (error) => {
-    const msg = error.message;
+    let msg; 
+    if(error.data){
+        msg = error.data.message;
+    }else{
+      msg = error.message;
+    }
+
     const parts = msg.split(":");
     const lastPart = parts[parts.length - 1].trim();
     return lastPart;
@@ -187,13 +193,15 @@ export const LotteryAPI = {
       });
       console.log("预测成功，可以调用，返回值:", canBuy);
     } catch (error) {
-      console.error("Error checking buy eligibility:", error);
-      throw new Error(error.message || "无法购买彩票，请检查网络或合约状态");
+      // console.error("Error checking buy eligibility:", error.data.message);
+      throw new Error(error.data.message || "无法购买彩票，请检查网络或合约状态");
     }
     // 假设合约有 bet() payable 方法
+    const gasPrice = await web3.eth.getGasPrice(); // 获取市场 gasPrice
     const receipt = await contract.methods.buyTicket(betNumber).send({
       from: accounts[0],
-      value: web3.utils.toWei(betAmount, 'ether')
+      value: web3.utils.toWei(betAmount, 'ether'),
+      gasPrice: gasPrice
     })
     return receipt
   },
@@ -207,9 +215,10 @@ export const LotteryAPI = {
       const canClaim = await contract.methods.claimPrize().call({ from: accounts[0] });
       console.log("预测成功，可以调用，返回值:", canClaim);
     } catch (error) {
-      console.error("Error checking claim eligibility:", error);
-      throw new Error(error.message || "无法领取奖金，请检查网络或合约状态");
+      console.error("Error checking claim eligibility:", error.data.message);
+      throw new Error(error.data.message || "无法领取奖金，请检查网络或合约状态");
     }
+    const gasPrice = await web3.eth.getGasPrice(); // 获取市场 gasPrice
     const receipt = await contract.methods.claimPrize().send({ from: accounts[0] });
     return receipt;
   },
@@ -232,11 +241,11 @@ export const LotteryAPI = {
       const canDistribute = await contract.methods.distributePrizesAndEndCurrentRound().call({ from: accounts[0] });
       console.log("预测成功，可以调用，返回值:", canDistribute);
     } catch (error) {
-      console.error("Error checking distribution eligibility:", error);
-      throw new Error(error.message || "无法分配奖金，请检查网络或合约状态");
+      console.error("Error checking distribution eligibility:", error.data.message);
+      throw new Error(error.data.message || "无法分配奖金，请检查网络或合约状态");
     }
-
-    const receipt = await contract.methods.distributePrizesAndEndCurrentRound().send({ from: accounts[0] });
+const gasPrice = await web3.eth.getGasPrice(); // 获取市场 gasPrice
+    const receipt = await contract.methods.distributePrizesAndEndCurrentRound().send({ from: accounts[0] ,gasPrice});
     return receipt;
   },
   startNewRound: async (from) => {
@@ -247,10 +256,11 @@ export const LotteryAPI = {
       const canStartNewRound = await contract.methods.startNewRound().call({ from: accounts[0] });
       console.log("预测成功，可以调用，返回值:", canStartNewRound);
     } catch (error) {
-      console.error("Error checking new round eligibility:", error);
-      throw new Error(error.message || "无法开始新一轮，请检查网络或合约状态");
+      console.error("Error checking new round eligibility:", error.data.message);
+      throw new Error(error.data.message || "无法开始新一轮，请检查网络或合约状态");
     }
-    const receipt = await contract.methods.startNewRound().send({ from: accounts[0] });
+    const gasPrice = await web3.eth.getGasPrice(); // 获取市场 gasPrice
+    const receipt = await contract.methods.startNewRound().send({ from: accounts[0],gasPrice });
     return receipt;
   },
   acceptOwnership: (from) => contract.methods.acceptOwnership().send({ from }),
@@ -272,10 +282,11 @@ export const LotteryAPI = {
       const canPreDistribute = await contract.methods.preDistributePrizes().call({ from: accounts[0] });
       console.log("预测成功，可以调用，返回值:", canPreDistribute);
     } catch (error) {
-      console.error("Error checking pre-distribution eligibility:", error);
-      throw new Error(error.message || "无法预分配奖金，请检查网络或合约状态");
+      console.error("Error checking pre-distribution eligibility:", error.data.message);
+      throw new Error(error.data.message || "无法预分配奖金，请检查网络或合约状态");
     }
-    const receipt = await contract.methods.preDistributePrizes().send({ from: accounts[0] })
+    const gasPrice = await web3.eth.getGasPrice(); // 获取市场 gasPrice
+    const receipt = await contract.methods.preDistributePrizes().send({ from: accounts[0],gasPrice })
     return receipt;
   },
   refundTickets: (from) => contract.methods.refundTickets().send({ from }),
