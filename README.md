@@ -97,6 +97,6 @@ java -jar target/xxx.jar
 - lottery-backend：后端项目说明（可在 src/ 或代码注释中查看）
 
 
-Demo 地址：http://sepolia.lottery.unclepro.top/#/
+欢迎试用：[ 地址：http://sepolia.lottery.unclepro.top/#/](https://polygon.unclepro.top/#/)
 
 如有建议或问题，欢迎提 Issue

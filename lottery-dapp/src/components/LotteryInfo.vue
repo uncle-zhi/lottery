@@ -129,6 +129,8 @@ import UserInfo from '@/components/UserInfo.vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Contract } from 'web3';
+import {SUPPORTED_NETWORK} from '@/config/lotteryConfig'
+
 const { t } = useI18n()
 const router = useRouter();
 const contractAddress = ref("");
@@ -277,7 +279,7 @@ const loadLotteryInfo = async () => {
 
 const intervalReload = () => {
   loadLotteryInfo();
-  contractHref.value = `https://polygonscan.com/address/${contractAddress.value}`;
+  contractHref.value = `${SUPPORTED_NETWORK.scanUrl}${contractAddress.value}`;
 
   //每30秒刷新一次页面
   if (!intervalId.value) {

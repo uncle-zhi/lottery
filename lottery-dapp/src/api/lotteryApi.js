@@ -95,7 +95,7 @@ export const LotteryAPI = {
   getWinRecords: async(player) => {
       const latestBlock = await web3.eth.getBlockNumber();
       const events = await contract.getPastEvents("PrizeDistributed", {
-        fromBlock: Number(latestBlock)-5000,
+        fromBlock: 0,
         toBlock: 'latest',
         filter: {
           player: player
@@ -117,7 +117,7 @@ export const LotteryAPI = {
       }
       const latestBlock = await web3.eth.getBlockNumber();
     const events = await contract.getPastEvents("RandomNumberFulfilled", {
-        fromBlock: Number(latestBlock)-5000,
+        fromBlock: 0,
         toBlock: 'latest',
         filter: {
           round: filterRound
@@ -129,7 +129,7 @@ export const LotteryAPI = {
     const accounts = await web3.eth.getAccounts();
     const latestBlock = await web3.eth.getBlockNumber();
     const events = await contract.getPastEvents("TicketPurchased", {
-      fromBlock: Number(latestBlock)-5000,
+      fromBlock: 0,
       toBlock: 'latest',
       filter: {
         player: accounts[0]
@@ -142,7 +142,7 @@ export const LotteryAPI = {
     const accounts = await web3.eth.getAccounts();
     const latestBlock = await web3.eth.getBlockNumber();
     const events = await contract.getPastEvents("PrizeDistributed", {
-      fromBlock: Number(latestBlock)-5000,
+      fromBlock: 0,
       toBlock: 'latest',
       filter: {
         player: accounts[0]
@@ -219,7 +219,7 @@ export const LotteryAPI = {
       throw new Error(error.data.message || "无法领取奖金，请检查网络或合约状态");
     }
     const gasPrice = await web3.eth.getGasPrice(); // 获取市场 gasPrice
-    const receipt = await contract.methods.claimPrize().send({ from: accounts[0] });
+    const receipt = await contract.methods.claimPrize().send({ from: accounts[0],gasPrice });
     return receipt;
   },
   estimateDistributePrizesAndEndCurrentRoundFee: async() => {

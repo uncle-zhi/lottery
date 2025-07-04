@@ -48,6 +48,10 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
         uint128 currentBetAmount; //当前轮投注金额 (Current round bet amount)
         uint8 currentBetNumber; //当前轮投注号码 (Current round bet number)
         uint128 pendingPrize; //待领取奖金 (Pending prize)
+        uint64 betCount; //已投注次数 (Bet count)
+        uint128 totalBetAmount; //累计投注金额 (Total bet amount)
+        uint64 winCount; //中奖次数 (Win count)
+        uint128 totalPrize; //累计中奖金额 (Total prize)
     }
 
     VRFConfig public vrfConfig;
@@ -71,6 +75,7 @@ contract Lottery is VRFConsumerBaseV2Plus, ReentrancyGuardUpgradeable {
     mapping(uint32 => mapping(address => bool)) public roundHasBought; // 防止重复购票 (Prevent duplicate ticket purchase)
     mapping(uint32 => mapping(uint8 => Ticket[])) public roundTicketsPerNumber; // 每个号码的购票记录 (Ticket records per number)
     mapping(address => uint128) public pendingRewards; // 存储每个玩家的待领取奖金 (Pending rewards for each player)
+    mapping(address => PlayerInfo) public playerInfoMap;
 
     uint public constant MIN_BET_AMOUNT = 0.01 ether; // 最小投注金额 (Minimum bet amount)
     uint8 public constant MAX_NUMBER = 5; // 最大购票号码 (Maximum ticket number)

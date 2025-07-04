@@ -17,4 +17,5 @@ export const LOTTERY_ABI =[{"inputs":[{"internalType":"uint256","name":"subscrip
 export const SUPPORTED_NETWORK = {
   chainId: 137, // sepolia 网络
   chainName: 'Polygon Mainnet',
+  scanUrl: 'https://polygonscan.com/address/'
 }
